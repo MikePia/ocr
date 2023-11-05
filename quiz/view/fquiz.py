@@ -30,6 +30,7 @@ from quiz.models.Question import (
 class FreeQuiz(QMainWindow, Ui_MainWindow):
     questions = None
     current_question = -1
+    user_email = None
 
     def __init__(self, email=None):
         super(FreeQuiz, self).__init__()
@@ -43,8 +44,6 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
         self.login(email)
 
     def login(self, email):
-        email = os.environ.get("MY_USER_EMAIL")
-        assert email, "MY_USER_EMAIL environment variable not set"
         self.user = User.get_user(email)
 
     def get_quiz_questions(self):
@@ -99,11 +98,11 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
                 self.answers_verticalLayout
             )  # Clear existing widgets from the layout
 
-            count = 1
+            count = 0
             for answer in q.answers:
                 if not answer.answer or not answer.answer.strip():  # Skip empty answers
                     continue  # Skip empty answers
-                ans = str(count) + ". " + answer.answer
+                ans = chr(count + ord("A")) + ". " + answer.answer
                 count += 1
                 item_widget = QWidget()  # Create a new widget for each answer
                 layout = QHBoxLayout()  # Horizontal layout
@@ -212,9 +211,9 @@ class EndOfQuizDialog(QDialog):
             return "quit", 0
 
 
-def main():
+def main(email=None):
     app = QApplication(sys.argv)
-    win = FreeQuiz()
+    win = FreeQuiz(email)
     win.show()
     sys.exit(app.exec())
 

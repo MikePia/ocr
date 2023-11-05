@@ -19,11 +19,11 @@ from PySide6.QtWidgets import (
 )
 
 from .free_quiz_ui import Ui_MainWindow
-from quiz.prepstuff.processquestions import (
+from quiz.prepstuff.processquestions import get_gpt_response
+from quiz.models.Question import (
     Question,
     User,
     get_session,
-    get_gpt_response,
 )
 
 

@@ -1,0 +1,5 @@
+p
+pytesseract
+Pillow
+opencv-python
+psycopg2

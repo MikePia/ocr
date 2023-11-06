@@ -1,4 +1,5 @@
 # pyside6-rcc resources.qrc -o resources_rc.py
+import logging
 import os
 import sys
 
@@ -21,6 +22,8 @@ from PySide6.QtWidgets import (
     QMessageBox,
     QComboBox,
 )
+from quiz.view.login_dlg import UserLoginDialog
+from quiz.view.question_compare_dlg import QuestionComparisonDialog
 
 
 from .free_quiz_ui import Ui_MainWindow
@@ -32,6 +35,8 @@ from quiz.models.Question import (
     get_session,
     Answer,
 )
+
+logger = logging.getLogger(__name__)
 
 COMPANY = "ZeroSubstance"
 
@@ -61,6 +66,7 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
         self.actionStart_Quiz.triggered.connect(self.menu_start)
         self.actionSet_Item_Correct.triggered.connect(self.set_item_correct)
         self.actionRegenerate.triggered.connect(self.regenerate)
+        self.actionFind_Duplicates.triggered.connect(self.find_duplicates)
 
         self.login(email)
 
@@ -106,17 +112,50 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
     def regenerate(self):
         self.get_explanation(force=True)
 
+    def find_duplicates(self):
+        if not self.user or self.user.role != "admin":
+            QMessageBox.warning(self, "Error", "You must be an admin to do this")
+            return
+        session = get_session()
+        current_question = self.questions[self.current_question]
+        all_questions = Question.get_all_questions(session)
+
+        try:
+            for question in all_questions:
+                if question.id == current_question.id:
+                    continue  # Skip comparison with itself
+
+                if Question.nearly_equal(current_question, question):
+                    dialog = QuestionComparisonDialog(current_question, question, self)
+                    result = dialog.exec()
+
+                    if result == 1:
+                        # Delete current question and exit the loop
+                        Question.delete_by_id(session, current_question.id)
+                        self.current_question = -1
+                        return
+                    elif result == 2:
+                        # Delete the other question
+                        Question.delete_by_id(session, question.id)
+            QMessageBox.information(self, "Success", "Find Duplicates Done")
+        except Exception as e:
+            logger.exception(str(e))
+            QMessageBox.warning(self, "Error", "Error finding duplicates")
+            session.rollback()
+        finally:
+            session.close()
+            self.get_quiz_questions()
+
     def userSelect(self):
         session = get_session()
         dialog = UserLoginDialog(session)
         if dialog.exec():
             selected_user = dialog.user
             if selected_user:
-                print(f"Selected User: {selected_user.username}")
                 self.user = selected_user
 
     def login(self, email):
-        self.user = User.get_user(email)
+        self.userSelect()
 
     def get_quiz_questions(self):
         session = get_session()  # Get the SQLAlchemy session
@@ -347,84 +386,6 @@ class EndOfQuizDialog(QDialog):
             return "specific_question", self.number_box.value()
         else:
             return "quit", 0
-
-
-# Assume User is your SQLAlchemy model
-# from your_model_file import User
-
-
-class UserLoginDialog(QDialog):
-    def __init__(self, session, parent=None):
-        super().__init__(parent)
-        self.session = session  # SQLAlchemy session
-        self.user = None  # Current user
-
-        self.init_ui()
-
-    def init_ui(self):
-        layout = QVBoxLayout(self)
-
-        # List of users
-        self.user_list = QListWidget(self)
-        self.load_users()
-        layout.addWidget(self.user_list)
-
-        # New user form
-        self.username_edit = QLineEdit(self)
-        self.email_edit = QLineEdit(self)
-        self.role_combo = QComboBox(self)
-        self.role_combo.addItems(["admin", "staff", "student"])  # Adding role options
-        new_user_layout = QHBoxLayout()
-        new_user_layout.addWidget(QLabel("Username:"))
-        new_user_layout.addWidget(self.username_edit)
-        new_user_layout.addWidget(QLabel("Email:"))
-        new_user_layout.addWidget(self.email_edit)
-        new_user_layout.addWidget(QLabel("Role:"))
-        new_user_layout.addWidget(self.role_combo)
-        layout.addLayout(new_user_layout)
-
-        # Buttons
-        self.select_button = QPushButton("Select User", self)
-        self.select_button.clicked.connect(self.select_user)
-        self.create_button = QPushButton("Create New User", self)
-        self.create_button.clicked.connect(self.create_user)
-        button_layout = QHBoxLayout()
-        button_layout.addWidget(self.select_button)
-        button_layout.addWidget(self.create_button)
-        layout.addLayout(button_layout)
-
-        self.setLayout(layout)
-
-    def load_users(self):
-        self.user_list.clear()
-        users = self.session.query(User).all()
-        for user in users:
-            self.user_list.addItem(f"{user.username} ({user.email})")
-
-    def select_user(self):
-        selected_items = self.user_list.selectedItems()
-        if selected_items:
-            selected_user = selected_items[0].text()
-            username = selected_user.split(" (")[0]
-            self.user = self.session.query(User).filter_by(username=username).first()
-            self.accept()
-
-    def create_user(self):
-        username = self.username_edit.text()
-        email = self.email_edit.text()
-        role = self.role_combo.currentText()
-
-        if username and email:
-            new_user = User.create_new_user(
-                self.session, username=username, email=email, role=role
-            )
-            self.session.commit()
-            QMessageBox.information(
-                self, "User Created", f"User '{username}' created successfully."
-            )
-            self.load_users()
-        else:
-            QMessageBox.warning(self, "Incomplete Form", "Please fill in all fields.")
 
 
 def main(email=None):

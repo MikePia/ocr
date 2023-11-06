@@ -194,6 +194,9 @@ color: rgb(255, 255, 255);</string>
                <property name="text">
                 <string>Previous Question</string>
                </property>
+               <property name="shortcut">
+                <string>Left</string>
+               </property>
               </widget>
              </item>
              <item>
@@ -204,6 +207,9 @@ color: rgb(255, 255, 255);</string>
                </property>
                <property name="text">
                 <string>Next Question</string>
+               </property>
+               <property name="shortcut">
+                <string>Right</string>
                </property>
               </widget>
              </item>
@@ -247,6 +253,9 @@ color: rgb(255, 255, 255);</string>
             </property>
             <property name="text">
              <string>Show Explanation</string>
+            </property>
+            <property name="shortcut">
+             <string>Ctrl+E</string>
             </property>
            </widget>
           </item>
@@ -312,6 +321,9 @@ color: rgb(255, 255, 255);</string>
             <property name="text">
              <string>Save Notes</string>
             </property>
+            <property name="shortcut">
+             <string>Ctrl+S</string>
+            </property>
            </widget>
           </item>
          </layout>
@@ -344,6 +356,7 @@ background-color: rgb(153, 193, 241);</string>
     <addaction name="actionUser_Login"/>
     <addaction name="actionSet_Item_Correct"/>
     <addaction name="actionRegenerate"/>
+    <addaction name="actionFind_Duplicates"/>
    </widget>
    <addaction name="filemenu"/>
   </widget>
@@ -372,6 +385,14 @@ background-color: rgb(153, 193, 241);</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionFind_Duplicates">
+   <property name="text">
+    <string>Find Duplicates</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
    </property>
   </action>
  </widget>

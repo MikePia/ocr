@@ -217,8 +217,8 @@ class Question(Base):
             raise e
 
     @classmethod
-    def are_questions_nearly_equal(cls, question1, question2):
-        # Compare the question texts
+    def nearly_equal(cls, question1, question2):
+        # Compare the question and answer texts
         if compare_sentences(question1.question, question2.question) < 0:
             return False
 
@@ -228,6 +228,22 @@ class Question(Base):
 
         # Compare the sets of answers
         return compare_sets(answers1, answers2)
+
+    @classmethod
+    def delete_by_id(cls, session, question_id):
+        """
+        Delete a question by its ID.
+
+        :param session: SQLAlchemy session
+        :param question_id: ID of the question to be deleted
+        """
+        question = session.query(Question).get(question_id)
+        if question:
+            session.delete(question)
+            session.commit()
+            return True
+        else:
+            return False
 
 
 class Answer(Base):

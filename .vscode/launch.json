@@ -5,6 +5,20 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: Login Module",
+            "type": "python",
+            "request": "launch",
+            "module": "quiz.view.login_dlg",
+            "justMyCode": true
+        },
+        {
+            "name": "Python: Module Compare",
+            "type": "python",
+            "request": "launch",
+            "module": "quiz.view.question_compare_dlg",
+            "justMyCode": true
+        },
+        {
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
@@ -13,7 +27,7 @@
             "justMyCode": true
         },
         {
-            "name": "Python: Module",
+            "name": "Python: Main Module",
             "type": "python",
             "request": "launch",
             "module": "Main",

@@ -16,10 +16,10 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QIcon, QImage, QKeySequence, QLinearGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
-from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QLabel,
-    QListView, QMainWindow, QMenu, QMenuBar,
-    QPushButton, QSizePolicy, QStatusBar, QTextEdit,
-    QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QCheckBox, QFrame, QHBoxLayout,
+    QLabel, QLineEdit, QListView, QMainWindow,
+    QMenu, QMenuBar, QPushButton, QSizePolicy,
+    QStatusBar, QTextEdit, QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -175,6 +175,30 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_3.addWidget(self.explanation_edit)
 
+        self.show_answers_frame = QFrame(self.explanation_frame)
+        self.show_answers_frame.setObjectName(u"show_answers_frame")
+        self.show_answers_frame.setFrameShape(QFrame.StyledPanel)
+        self.show_answers_frame.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_3 = QHBoxLayout(self.show_answers_frame)
+        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
+        self.show_answers_cb = QCheckBox(self.show_answers_frame)
+        self.show_answers_cb.setObjectName(u"show_answers_cb")
+
+        self.horizontalLayout_3.addWidget(self.show_answers_cb)
+
+        self.show_answer_btn = QPushButton(self.show_answers_frame)
+        self.show_answer_btn.setObjectName(u"show_answer_btn")
+
+        self.horizontalLayout_3.addWidget(self.show_answer_btn)
+
+
+        self.verticalLayout_3.addWidget(self.show_answers_frame)
+
+        self.show_answers_le = QLineEdit(self.explanation_frame)
+        self.show_answers_le.setObjectName(u"show_answers_le")
+
+        self.verticalLayout_3.addWidget(self.show_answers_le)
+
 
         self.verticalLayout_6.addWidget(self.explanation_frame)
 
@@ -243,6 +267,11 @@ class Ui_MainWindow(object):
         self.previous_btn.setText(QCoreApplication.translate("MainWindow", u"Previous Question", None))
         self.next_btn.setText(QCoreApplication.translate("MainWindow", u"Next Question", None))
         self.explanation_btn.setText(QCoreApplication.translate("MainWindow", u"Show Explanation", None))
+        self.show_answers_cb.setText(QCoreApplication.translate("MainWindow", u"Show Correct Answers", None))
+#if QT_CONFIG(tooltip)
+        self.show_answer_btn.setToolTip(QCoreApplication.translate("MainWindow", u"Use the menu command to set a correct answer", None))
+#endif // QT_CONFIG(tooltip)
+        self.show_answer_btn.setText(QCoreApplication.translate("MainWindow", u"Show This Correct Answer", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Take notes", None))
         self.save_notes_btn.setText(QCoreApplication.translate("MainWindow", u"Save Notes", None))
         self.filemenu.setTitle(QCoreApplication.translate("MainWindow", u"file", None))

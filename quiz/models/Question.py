@@ -247,5 +247,21 @@ class Answer(Base):
         finally:
             session.close()
 
+    @classmethod
+    def get_correct_answers(self, question_id):
+        session = get_session()
+        try:
+            answers = (
+                session.query(Answer)
+                .filter_by(question_id=question_id, is_right_answer=True)
+                .all()
+            )
+            return answers
+        except Exception as e:
+            session.rollback()
+            logger.exception(str(e))
+            raise e
+        return []
+
     def __repr__(self):
         return f"<Answer(id={self.id}, answer='{self.answer}', question_id={self.question_id}, is_right_answer={self.is_right_answer})>"

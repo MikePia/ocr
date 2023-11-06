@@ -250,6 +250,38 @@ color: rgb(255, 255, 255);</string>
           <item>
            <widget class="QTextEdit" name="explanation_edit"/>
           </item>
+          <item>
+           <widget class="QFrame" name="show_answers_frame">
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <widget class="QCheckBox" name="show_answers_cb">
+               <property name="text">
+                <string>Show Correct Answers</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="show_answer_btn">
+               <property name="toolTip">
+                <string>Use the menu command to set a correct answer</string>
+               </property>
+               <property name="text">
+                <string>Show This Correct Answer</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="show_answers_le"/>
+          </item>
          </layout>
         </widget>
        </item>

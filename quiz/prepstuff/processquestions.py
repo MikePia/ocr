@@ -95,8 +95,8 @@ def get_prompt(question):
 Below I will paste a multiple choice python quiz question followed by the possible answers.
  The question may be a fill in the blank type question where the blank is represented by at
  least 3 underscores ('___'). The answers are enumerated with letters. After the list of answers,
- I will write 'End of answers.' You should then answer the question by giving the letter
- associated with the correct answer(s), each letter formatted with a close parenthesee like this "A)".
+ I will write 'End of answers.' You should then answer the question by giving the correct response
+  without the corresponding letter associated with the correct answer(s).
  Then I would like you to explain why the answer(s) is
  correct. Do not list any additional answer options or repeat the prompt as part of your response.
 

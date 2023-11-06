@@ -41,6 +41,7 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
     current_question = -1
     user = None
     answer_items = []
+    show_answers_bool = False
 
     def __init__(self, email=None):
         super(FreeQuiz, self).__init__()
@@ -48,13 +49,18 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
         self.init_window_placement()
         self.setWindowTitle("Free Quiz")
         self.setWindowIcon(QIcon("ZSLogo1.png"))
+
         self.next_btn.clicked.connect(self.next)
         self.previous_btn.clicked.connect(self.previous)
-        self.actionStart_Quiz.triggered.connect(self.start_quiz)
         self.explanation_btn.clicked.connect(self.get_explanation)
         self.save_notes_btn.clicked.connect(self.save_notes)
+        self.show_answer_btn.clicked.connect(self.show_answer)
+        self.show_answers_cb.clicked.connect(self.show_answers)
+
+        self.actionStart_Quiz.triggered.connect(self.start_quiz)
         self.actionStart_Quiz.triggered.connect(self.menu_start)
         self.actionSet_Item_Correct.triggered.connect(self.set_item_correct)
+
         self.login(email)
 
     def init_window_placement(self):
@@ -115,19 +121,25 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
         session.close()  # Close the session
 
     def get_explanation(self):
-        if self.current_question >= 0 and self.current_question < len(self.questions):
-            q = self.questions[self.current_question]
-            if not q.explanation:
-                explanation = get_gpt_response(q)
-                q.explanation = explanation
-                session = get_session()
-                Question.update_explanation(session, q.explanation, q.id)
-                session.close()
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+        try:
+            if self.current_question >= 0 and self.current_question < len(
+                self.questions
+            ):
+                q = self.questions[self.current_question]
+                if not q.explanation:
+                    explanation = get_gpt_response(q)
+                    q.explanation = explanation
+                    session = get_session()
+                    Question.update_explanation(session, q.explanation, q.id)
+                    session.close()
 
-            html = f'<html><head/><body><p><span style=" font-size:22pt; font-weight:700; color:#deddda;">GPT Explanation:</span></p><p class="question"><span style=" color:#ffffff;">{q.explanation}</span></p></body></html>'
-            self.explanation_edit.setText(html)
-            self.update()
-            self.explanation_edit.show()
+                html = f'<html><head/><body><p><span style=" font-size:22pt; font-weight:700; color:#deddda;">GPT Explanation:</span></p><p class="question"><span style=" color:#ffffff;">{q.explanation}</span></p></body></html>'
+                self.explanation_edit.setText(html)
+                self.update()
+                self.explanation_edit.show()
+        finally:
+            QApplication.restoreOverrideCursor()  # Restore the original cursor
 
     def start_quiz(self):
         self.get_quiz_questions()
@@ -143,6 +155,7 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
         self.explanation_edit.clear()
         self.notes_edit.clear()
         self.answer_items.clear()
+        self.show_answers_le.clear()
 
     def save_notes(self):
         if (
@@ -165,6 +178,25 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
                 "Please ensure you have selected a valid question and are logged in."
             )
             msg.exec_()
+
+    def show_answer(self):
+        if self.current_question >= 0 and self.current_question < len(self.questions):
+            q = self.questions[self.current_question]
+            answers = Answer.get_correct_answers(q.id)
+            dbanswers = [x.answer.strip() for x in answers]
+            printed_answers = []
+            for i, item in enumerate(self.answer_items):
+                if item[1][2:].strip() in dbanswers:
+                    printed_answers.append(
+                        f"{chr(i + ord('A'))}) {item[1][2:].strip()}"
+                    )
+            a = ": ".join(printed_answers)
+            self.show_answers_le.setText(a)
+            self.update()
+            self.show()
+
+    def show_answers(self, val):
+        self.show_answers_bool = val
 
     def previous(self):
         if self.current_question > 0 and self.current_question < len(self.questions):
@@ -229,9 +261,9 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
 
             self.answers_verticalLayout.addStretch(1)
 
-            self.setStyleSheet(
-                self.styleSheet()
-            )  # Reapply stylesheets to update the style of new widgets
+            self.setStyleSheet(self.styleSheet())
+            if self.show_answers_bool:
+                self.show_answer()
             self.show()
             self.update()
         else:
@@ -398,6 +430,4 @@ def main(email=None):
 
 
 if __name__ == "__main__":
-    projectdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    os.chdir(projectdir)
     main()

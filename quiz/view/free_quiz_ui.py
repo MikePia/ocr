@@ -19,7 +19,7 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
 from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QLabel,
     QListView, QMainWindow, QMenu, QMenuBar,
     QPushButton, QSizePolicy, QStatusBar, QTextEdit,
-    QToolBar, QVBoxLayout, QWidget)
+    QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -35,6 +35,10 @@ class Ui_MainWindow(object):
 "")
         self.actionStart_Quiz = QAction(MainWindow)
         self.actionStart_Quiz.setObjectName(u"actionStart_Quiz")
+        self.actionUser_Login = QAction(MainWindow)
+        self.actionUser_Login.setObjectName(u"actionUser_Login")
+        self.actionSet_Item_Correct = QAction(MainWindow)
+        self.actionSet_Item_Correct.setObjectName(u"actionSet_Item_Correct")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.horizontalLayout = QHBoxLayout(self.centralwidget)
@@ -213,13 +217,12 @@ class Ui_MainWindow(object):
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
         MainWindow.setStatusBar(self.statusbar)
-        self.toolBar = QToolBar(MainWindow)
-        self.toolBar.setObjectName(u"toolBar")
-        MainWindow.addToolBar(Qt.TopToolBarArea, self.toolBar)
 
         self.menubar.addAction(self.filemenu.menuAction())
         self.filemenu.addSeparator()
         self.filemenu.addAction(self.actionStart_Quiz)
+        self.filemenu.addAction(self.actionUser_Login)
+        self.filemenu.addAction(self.actionSet_Item_Correct)
 
         self.retranslateUi(MainWindow)
 
@@ -229,6 +232,11 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.actionStart_Quiz.setText(QCoreApplication.translate("MainWindow", u"Start Quiz", None))
+        self.actionUser_Login.setText(QCoreApplication.translate("MainWindow", u"User Login", None))
+        self.actionSet_Item_Correct.setText(QCoreApplication.translate("MainWindow", u"Set Answer Correct", None))
+#if QT_CONFIG(shortcut)
+        self.actionSet_Item_Correct.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+R", None))
+#endif // QT_CONFIG(shortcut)
         self.question_label.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:22pt; font-weight:700; color:#deddda;\">Question:</span></p><p class=\"question\"><span style=\" color:#ffffff;\">This is a question about python and you should anser it.</span></p></body></html>", None))
         self.answers_label.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:22pt; color:#deddda;\">Answers:</span></p></body></html>", None))
         self.pushButton_3.setText(QCoreApplication.translate("MainWindow", u"Submit", None))
@@ -238,6 +246,5 @@ class Ui_MainWindow(object):
         self.label.setText(QCoreApplication.translate("MainWindow", u"Take notes", None))
         self.save_notes_btn.setText(QCoreApplication.translate("MainWindow", u"Save Notes", None))
         self.filemenu.setTitle(QCoreApplication.translate("MainWindow", u"file", None))
-        self.toolBar.setWindowTitle(QCoreApplication.translate("MainWindow", u"toolBar", None))
     # retranslateUi
 

@@ -2,7 +2,7 @@
 import os
 import sys
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QSettings, QRect, QByteArray, QPoint
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (
     QApplication,
@@ -10,13 +10,18 @@ from PySide6.QtWidgets import (
     QDialog,
     QHBoxLayout,
     QLabel,
+    QLineEdit,
+    QListWidget,
     QMainWindow,
     QPushButton,
     QRadioButton,
     QSpinBox,
     QVBoxLayout,
     QWidget,
+    QMessageBox,
+    QComboBox,
 )
+
 
 from .free_quiz_ui import Ui_MainWindow
 from quiz.prepstuff.processquestions import get_gpt_response
@@ -25,17 +30,22 @@ from quiz.models.Question import (
     QuestionNotes,
     User,
     get_session,
+    Answer,
 )
+
+COMPANY = "ZeroSubstance"
 
 
 class FreeQuiz(QMainWindow, Ui_MainWindow):
     questions = None
     current_question = -1
     user = None
+    answer_items = []
 
     def __init__(self, email=None):
         super(FreeQuiz, self).__init__()
         self.setupUi(self)
+        self.init_window_placement()
         self.setWindowTitle("Free Quiz")
         self.setWindowIcon(QIcon("ZSLogo1.png"))
         self.next_btn.clicked.connect(self.next)
@@ -43,7 +53,57 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
         self.actionStart_Quiz.triggered.connect(self.start_quiz)
         self.explanation_btn.clicked.connect(self.get_explanation)
         self.save_notes_btn.clicked.connect(self.save_notes)
+        self.actionStart_Quiz.triggered.connect(self.menu_start)
+        self.actionSet_Item_Correct.triggered.connect(self.set_item_correct)
         self.login(email)
+
+    def init_window_placement(self):
+        """Initialize window placement using QSettings."""
+        self.settings = QSettings(COMPANY, "FreeQuizApp")
+        self.restoreGeometry(self.settings.value("geometry", QByteArray()))
+        self.restoreState(self.settings.value("windowState", QByteArray()))
+
+        # restoreGeometry and restoreState not working. I think I remember this is an Ubuntu problem. Here is a workaround
+        self.move(
+            int(self.settings.value("x", int())), int(self.settings.value("y", int()))
+        )
+
+    def closeEvent(self, event):
+        """Save window state when the application is closed."""
+        self.settings.setValue("geometry", self.saveGeometry())
+        self.settings.setValue("windowState", self.saveState())
+
+        self.settings.setValue("x", self.x())
+        self.settings.setValue("y", self.y())
+
+        super(FreeQuiz, self).closeEvent(event)
+
+    def menu_start(self):
+        self.current_question = -1
+        self.next()
+
+    def get_selected_answers(self):
+        answers = []
+        for i in range(len(self.answer_items)):
+            answer = self.answer_items[i]
+            if answer[0].isChecked():
+                answers.append([i, answer[1][2:].strip()])
+        return answers
+
+    def set_item_correct(self):
+        if self.current_question >= 0 and self.current_question < len(self.questions):
+            selected_answers = self.get_selected_answers()
+            q = self.questions[self.current_question]
+            Answer.set_correct_answers(q.id, [x[1] for x in selected_answers])
+
+    def userSelect(self):
+        session = get_session()
+        dialog = UserLoginDialog(session)
+        if dialog.exec():
+            selected_user = dialog.user
+            if selected_user:
+                print(f"Selected User: {selected_user.username}")
+                self.user = selected_user
 
     def login(self, email):
         self.user = User.get_user(email)
@@ -82,6 +142,7 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
                 widget.deleteLater()
         self.explanation_edit.clear()
         self.notes_edit.clear()
+        self.answer_items.clear()
 
     def save_notes(self):
         if (
@@ -124,32 +185,38 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
             html = f'<html><head/><body><p><span style=" font-size:22pt; font-weight:700; color:#deddda;">Question:</span></p><p class="question"><span style=" color:#ffffff;">{q.question}</span></p></body></html>'
             self.question_label.setText(html)
 
-            self.clearLayout(
-                self.answers_verticalLayout
-            )  # Clear existing widgets from the layout
-
+            self.clearLayout(self.answers_verticalLayout)
             count = 0
+            html = f'<html><head/><body><p><span style=" font-size:22pt; font-weight:700; color:#deddda;">Answers:</span></p><p class="question"><span style=" color:#ffffff;"><hr></span></p></body></html>'
+            new_answers_label = QLabel(html)
+            # self.answers_label.setText(html)
+            self.answers_verticalLayout.addWidget(new_answers_label)
+            self.answers_verticalLayout.setAlignment(new_answers_label, Qt.AlignTop)
             for answer in q.answers:
                 if not answer.answer or not answer.answer.strip():  # Skip empty answers
                     continue  # Skip empty answers
                 ans = chr(count + ord("A")) + ". " + answer.answer
                 count += 1
-                item_widget = QWidget()  # Create a new widget for each answer
-                layout = QHBoxLayout()  # Horizontal layout
 
-                radio_button = QRadioButton()  # Create a radio button
-                label = QLabel(ans)  # Create a label
+                # Create a new widget for each answer
+                item_widget = QWidget()
+                layout = QHBoxLayout()
 
-                layout.addWidget(radio_button)  # Add radio button to the layout
-                layout.addWidget(label)  # Add label to the layout
-                layout.addStretch()  # Add stretch to push everything to the left
+                radio_button = QRadioButton()
+                self.answer_items.append([radio_button, ans])
+                label = QLabel(ans)
 
-                layout.addStretch(
-                    1
-                )  # Add stretch to fill the remaining horizontal space
+                layout.addWidget(radio_button)
+                layout.addWidget(label)
+                layout.addStretch()
 
-                item_widget.setLayout(layout)  # Set the layout for the widget
+                layout.addStretch(1)
 
+                item_widget.setLayout(layout)
+
+                item_widget.setStyleSheet(
+                    "color: rgb(0, 0, 0); background-color: rgb(153, 193, 241);"
+                )
                 self.answers_verticalLayout.addWidget(item_widget)
                 self.answers_verticalLayout.setAlignment(item_widget, Qt.AlignTop)
 
@@ -244,10 +311,89 @@ class EndOfQuizDialog(QDialog):
             return "quit", 0
 
 
+# Assume User is your SQLAlchemy model
+# from your_model_file import User
+
+
+class UserLoginDialog(QDialog):
+    def __init__(self, session, parent=None):
+        super().__init__(parent)
+        self.session = session  # SQLAlchemy session
+        self.user = None  # Current user
+
+        self.init_ui()
+
+    def init_ui(self):
+        layout = QVBoxLayout(self)
+
+        # List of users
+        self.user_list = QListWidget(self)
+        self.load_users()
+        layout.addWidget(self.user_list)
+
+        # New user form
+        self.username_edit = QLineEdit(self)
+        self.email_edit = QLineEdit(self)
+        self.role_combo = QComboBox(self)
+        self.role_combo.addItems(["admin", "staff", "student"])  # Adding role options
+        new_user_layout = QHBoxLayout()
+        new_user_layout.addWidget(QLabel("Username:"))
+        new_user_layout.addWidget(self.username_edit)
+        new_user_layout.addWidget(QLabel("Email:"))
+        new_user_layout.addWidget(self.email_edit)
+        new_user_layout.addWidget(QLabel("Role:"))
+        new_user_layout.addWidget(self.role_combo)
+        layout.addLayout(new_user_layout)
+
+        # Buttons
+        self.select_button = QPushButton("Select User", self)
+        self.select_button.clicked.connect(self.select_user)
+        self.create_button = QPushButton("Create New User", self)
+        self.create_button.clicked.connect(self.create_user)
+        button_layout = QHBoxLayout()
+        button_layout.addWidget(self.select_button)
+        button_layout.addWidget(self.create_button)
+        layout.addLayout(button_layout)
+
+        self.setLayout(layout)
+
+    def load_users(self):
+        self.user_list.clear()
+        users = self.session.query(User).all()
+        for user in users:
+            self.user_list.addItem(f"{user.username} ({user.email})")
+
+    def select_user(self):
+        selected_items = self.user_list.selectedItems()
+        if selected_items:
+            selected_user = selected_items[0].text()
+            username = selected_user.split(" (")[0]
+            self.user = self.session.query(User).filter_by(username=username).first()
+            self.accept()
+
+    def create_user(self):
+        username = self.username_edit.text()
+        email = self.email_edit.text()
+        role = self.role_combo.currentText()
+
+        if username and email:
+            new_user = User.create_new_user(
+                self.session, username=username, email=email, role=role
+            )
+            self.session.commit()
+            QMessageBox.information(
+                self, "User Created", f"User '{username}' created successfully."
+            )
+            self.load_users()
+        else:
+            QMessageBox.warning(self, "Incomplete Form", "Please fill in all fields.")
+
+
 def main(email=None):
     app = QApplication(sys.argv)
     win = FreeQuiz(email)
     win.show()
+
     sys.exit(app.exec())
 
 

@@ -228,5 +228,24 @@ class Answer(Base):
 
     question = relationship("Question", back_populates="answers")
 
+    @classmethod
+    def set_correct_answers(cls, question_id: int, answers: list):
+        session = get_session()
+        try:
+            question = session.query(Question).filter_by(id=question_id).one()
+            answers = [x.strip() for x in answers]
+            for answer in question.answers:
+                if answer.answer.strip() in answers:
+                    answer.is_right_answer = True
+                else:
+                    answer.is_right_answer = False
+            session.commit()
+        except Exception as e:
+            session.rollback()
+            logger.exception(str(e))
+            raise e
+        finally:
+            session.close()
+
     def __repr__(self):
         return f"<Answer(id={self.id}, answer='{self.answer}', question_id={self.question_id}, is_right_answer={self.is_right_answer})>"

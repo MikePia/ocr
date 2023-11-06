@@ -91,22 +91,62 @@ class QuestionNotes(Base):
     user = relationship("User", backref="user_notes")
 
     @classmethod
-    def create_note(cls, notes, question_id, user_id):
-        session = get_session()  # Open a session
+    def create_or_update_note(cls, notes, question_id, user_id):
+        session = get_session()
 
         try:
-            new_note = QuestionNotes.create_note(
-                session, "Note content", question_id, user_id
+            existing_note = (
+                session.query(cls)
+                .filter_by(question_id=question_id, user_id=user_id)
+                .first()
             )
-            # You can add more operations here
-            session.commit()  # Commit the session to save all changes
+
+            if existing_note:
+                existing_note.notes = notes
+            else:
+                new_note = cls(notes=notes, question_id=question_id, user_id=user_id)
+                session.add(new_note)
+
+            session.commit()
+
+            return existing_note or new_note
+
         except Exception as e:
-            session.rollback()  # Roll back in case of an error
-            logger.execption(str(e))
-            raise  # Re-raise the exception to handle it as needed
+            session.rollback()
+            logger.exception(str(e))
+            raise e
+
         finally:
-            session.close()  # Ensure the session is closed
-            return new_note
+            # Ensure the session is closed
+            session.close()
+
+    @classmethod
+    def get_notes(cls, user_id, question_id):
+        session = get_session()
+
+        try:
+            # notes = (
+            #     session.query(cls)
+            #     .filter_by(user_id=user_id, question_id=question_id)
+            #     .first()
+            # )
+            notes = (
+                session.query(QuestionNotes)
+                .filter_by(user_id=user_id, question_id=question_id)
+                .first()
+            )
+            if notes:
+                return notes.notes
+            else:
+                return None
+
+        except Exception as e:
+            session.rollback()
+            logger.exception(str(e))
+            raise e
+
+        finally:
+            session.close()
 
 
 class Question(Base):

@@ -22,6 +22,7 @@ from .free_quiz_ui import Ui_MainWindow
 from quiz.prepstuff.processquestions import get_gpt_response
 from quiz.models.Question import (
     Question,
+    QuestionNotes,
     User,
     get_session,
 )
@@ -30,7 +31,7 @@ from quiz.models.Question import (
 class FreeQuiz(QMainWindow, Ui_MainWindow):
     questions = None
     current_question = -1
-    user_email = None
+    user = None
 
     def __init__(self, email=None):
         super(FreeQuiz, self).__init__()
@@ -38,6 +39,7 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
         self.setWindowTitle("Free Quiz")
         self.setWindowIcon(QIcon("ZSLogo1.png"))
         self.next_btn.clicked.connect(self.next)
+        self.previous_btn.clicked.connect(self.previous)
         self.actionStart_Quiz.triggered.connect(self.start_quiz)
         self.explanation_btn.clicked.connect(self.get_explanation)
         self.save_notes_btn.clicked.connect(self.save_notes)
@@ -79,9 +81,37 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
             if widget is not None:
                 widget.deleteLater()
         self.explanation_edit.clear()
+        self.notes_edit.clear()
 
     def save_notes(self):
-        print("save notes clicked")
+        if (
+            self.current_question >= 0
+            and self.current_question < len(self.questions)
+            and self.user
+        ):
+            # user = User.get_user(self.user_email)
+            q = self.questions[self.current_question]
+            notes = self.notes_edit.toPlainText()
+            q.notes = notes
+            QuestionNotes.create_or_update_note(notes, q.id, self.user.id)
+        else:
+            # Qt dialog showing failure
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Warning)
+            msg.setWindowTitle("Error")
+            msg.setText("Unable to save notes.")
+            msg.setInformativeText(
+                "Please ensure you have selected a valid question and are logged in."
+            )
+            msg.exec_()
+
+    def previous(self):
+        if self.current_question > 0 and self.current_question < len(self.questions):
+            self.current_question -= 2
+        else:
+            self.current_question = -1
+
+        self.next()
 
     def next(self):
         if not self.questions:
@@ -120,12 +150,15 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
 
                 item_widget.setLayout(layout)  # Set the layout for the widget
 
-                self.answers_verticalLayout.addWidget(
-                    item_widget
-                )  # Add the custom widget to the vertical layout
-                self.answers_verticalLayout.setAlignment(
-                    item_widget, Qt.AlignTop
-                )  # Align the widget to the top
+                self.answers_verticalLayout.addWidget(item_widget)
+                self.answers_verticalLayout.setAlignment(item_widget, Qt.AlignTop)
+
+            if self.user:
+                notes = QuestionNotes.get_notes(self.user.id, q.id)
+                if notes:
+                    self.notes_edit.setText(notes)
+                else:
+                    self.notes_edit.clear()
 
             self.answers_verticalLayout.addStretch(1)
 

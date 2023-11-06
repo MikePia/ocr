@@ -17,9 +17,9 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
 from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QLabel,
-    QListWidget, QListWidgetItem, QMainWindow, QMenu,
-    QMenuBar, QPushButton, QSizePolicy, QStatusBar,
-    QTextEdit, QToolBar, QVBoxLayout, QWidget)
+    QListView, QMainWindow, QMenu, QMenuBar,
+    QPushButton, QSizePolicy, QStatusBar, QTextEdit,
+    QToolBar, QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -83,9 +83,7 @@ class Ui_MainWindow(object):
         self.answer_frame.setFrameShape(QFrame.NoFrame)
         self.answer_frame.setLineWidth(2)
         self.verticalLayout_2 = QVBoxLayout(self.answer_frame)
-        self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.answers_frame = QFrame(self.answer_frame)
         self.answers_frame.setObjectName(u"answers_frame")
         self.answers_frame.setFrameShape(QFrame.NoFrame)
@@ -100,7 +98,7 @@ class Ui_MainWindow(object):
 
         self.answers_verticalLayout.addWidget(self.answers_label)
 
-        self.answers_list_widget = QListWidget(self.answers_frame)
+        self.answers_list_widget = QListView(self.answers_frame)
         self.answers_list_widget.setObjectName(u"answers_list_widget")
         self.answers_list_widget.setFrameShape(QFrame.StyledPanel)
 
@@ -116,12 +114,28 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_2.addWidget(self.pushButton_3)
 
-        self.next_btn = QPushButton(self.answer_frame)
+        self.button_frame = QFrame(self.answer_frame)
+        self.button_frame.setObjectName(u"button_frame")
+        self.button_frame.setFrameShape(QFrame.StyledPanel)
+        self.button_frame.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_2 = QHBoxLayout(self.button_frame)
+        self.horizontalLayout_2.setSpacing(0)
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.previous_btn = QPushButton(self.button_frame)
+        self.previous_btn.setObjectName(u"previous_btn")
+
+        self.horizontalLayout_2.addWidget(self.previous_btn)
+
+        self.next_btn = QPushButton(self.button_frame)
         self.next_btn.setObjectName(u"next_btn")
         self.next_btn.setStyleSheet(u"\n"
 "color: rgb(255, 255, 255);")
 
-        self.verticalLayout_2.addWidget(self.next_btn)
+        self.horizontalLayout_2.addWidget(self.next_btn)
+
+
+        self.verticalLayout_2.addWidget(self.button_frame)
 
 
         self.verticalLayout.addWidget(self.answer_frame)
@@ -218,6 +232,7 @@ class Ui_MainWindow(object):
         self.question_label.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:22pt; font-weight:700; color:#deddda;\">Question:</span></p><p class=\"question\"><span style=\" color:#ffffff;\">This is a question about python and you should anser it.</span></p></body></html>", None))
         self.answers_label.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:22pt; color:#deddda;\">Answers:</span></p></body></html>", None))
         self.pushButton_3.setText(QCoreApplication.translate("MainWindow", u"Submit", None))
+        self.previous_btn.setText(QCoreApplication.translate("MainWindow", u"Previous Question", None))
         self.next_btn.setText(QCoreApplication.translate("MainWindow", u"Next Question", None))
         self.explanation_btn.setText(QCoreApplication.translate("MainWindow", u"Show Explanation", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Take notes", None))

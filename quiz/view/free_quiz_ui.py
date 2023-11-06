@@ -39,6 +39,8 @@ class Ui_MainWindow(object):
         self.actionUser_Login.setObjectName(u"actionUser_Login")
         self.actionSet_Item_Correct = QAction(MainWindow)
         self.actionSet_Item_Correct.setObjectName(u"actionSet_Item_Correct")
+        self.actionRegenerate = QAction(MainWindow)
+        self.actionRegenerate.setObjectName(u"actionRegenerate")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.horizontalLayout = QHBoxLayout(self.centralwidget)
@@ -71,6 +73,7 @@ class Ui_MainWindow(object):
         sizePolicy1.setVerticalStretch(2)
         sizePolicy1.setHeightForWidth(self.question_label.sizePolicy().hasHeightForWidth())
         self.question_label.setSizePolicy(sizePolicy1)
+        self.question_label.setWordWrap(True)
 
         self.verticalLayout_4.addWidget(self.question_label)
 
@@ -247,6 +250,7 @@ class Ui_MainWindow(object):
         self.filemenu.addAction(self.actionStart_Quiz)
         self.filemenu.addAction(self.actionUser_Login)
         self.filemenu.addAction(self.actionSet_Item_Correct)
+        self.filemenu.addAction(self.actionRegenerate)
 
         self.retranslateUi(MainWindow)
 
@@ -261,6 +265,7 @@ class Ui_MainWindow(object):
 #if QT_CONFIG(shortcut)
         self.actionSet_Item_Correct.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+R", None))
 #endif // QT_CONFIG(shortcut)
+        self.actionRegenerate.setText(QCoreApplication.translate("MainWindow", u"Regenerate gpt response", None))
         self.question_label.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:22pt; font-weight:700; color:#deddda;\">Question:</span></p><p class=\"question\"><span style=\" color:#ffffff;\">This is a question about python and you should anser it.</span></p></body></html>", None))
         self.answers_label.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:22pt; color:#deddda;\">Answers:</span></p></body></html>", None))
         self.pushButton_3.setText(QCoreApplication.translate("MainWindow", u"Submit", None))

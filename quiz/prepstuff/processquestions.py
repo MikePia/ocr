@@ -82,7 +82,7 @@ def extract_letter(text):
     return matches
 
 
-def get_prompt(question):
+def get_prompt(question, subject):
     def format_answer_options(answers):
         # Create an enumerated list of answers A), B), C), etc.
         options = [
@@ -92,7 +92,7 @@ def get_prompt(question):
         return "\n".join(options)
 
     prompt = f"""
-Below I will paste a multiple choice python quiz question followed by the possible answers.
+Below I will paste a multiple choice {subject} quiz question followed by the possible answers.
  The question may be a fill in the blank type question where the blank is represented by at
  least 3 underscores ('___'). The answers are enumerated with letters. After the list of answers,
  I will write 'End of answers.' You should then answer the question by giving the correct response
@@ -111,8 +111,8 @@ End of answers."""
     return prompt
 
 
-def get_gpt_response(question):
-    prompt = get_prompt(question)
+def get_gpt_response(question, subject="python"):
+    prompt = get_prompt(question, subject)
     response = openai.ChatCompletion.create(
         model="gpt-4",
         messages=[

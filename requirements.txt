@@ -1,5 +1,11 @@
-p
-pytesseract
-Pillow
-opencv-python
-psycopg2
+alembic
+numpy==1.26.1
+openai==0.28.1
+Pillow==10.1.0
+psycopg2==2.9.9
+PyQt6==6.4.2
+PySide6==6.5.2
+pytesseract==0.3.10
+python-dotenv==1.0.0
+requests==2.31.0
+SQLAlchemy==2.0.23

@@ -9,6 +9,8 @@ from dotenv import load_dotenv
 
 from sqlalchemy.types import Enum
 
+from quiz.models.utils.equality import compare_sentences, compare_sets
+
 logger = logging.getLogger(__name__)
 
 load_dotenv(os.environ["HOME"] + "/.chatgpt")
@@ -39,10 +41,8 @@ def get_db_connection():
 
 def recreate_tables(reallydrop=False):
     if reallydrop:
-        Base.metadata.drop_all(engine)  # Drop existing tables
-    Base.metadata.create_all(
-        engine
-    )  # Create tables again with new fields and constraints
+        Base.metadata.drop_all(engine)
+    Base.metadata.create_all(engine)
 
 
 def get_session():
@@ -156,7 +156,7 @@ class Question(Base):
     question = Column(String, nullable=False)
     explanation = Column(Text)
 
-    answers = relationship("Answer", back_populates="question")
+    answers = relationship("Answer", back_populates="question", cascade="all, delete")
 
     def __repr__(self):
         return f"<Question(id={self.id}, question='{self.question}', explanation='{self.explanation}')>"
@@ -215,6 +215,19 @@ class Question(Base):
         except Exception as e:
             session.rollback()
             raise e
+
+    @classmethod
+    def are_questions_nearly_equal(cls, question1, question2):
+        # Compare the question texts
+        if compare_sentences(question1.question, question2.question) < 0:
+            return False
+
+        # Extract answer texts from both questions
+        answers1 = {answer.answer for answer in question1.answers}
+        answers2 = {answer.answer for answer in question2.answers}
+
+        # Compare the sets of answers
+        return compare_sets(answers1, answers2)
 
 
 class Answer(Base):

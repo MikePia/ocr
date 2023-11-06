@@ -60,6 +60,7 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
         self.actionStart_Quiz.triggered.connect(self.start_quiz)
         self.actionStart_Quiz.triggered.connect(self.menu_start)
         self.actionSet_Item_Correct.triggered.connect(self.set_item_correct)
+        self.actionRegenerate.triggered.connect(self.regenerate)
 
         self.login(email)
 
@@ -102,6 +103,9 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
             q = self.questions[self.current_question]
             Answer.set_correct_answers(q.id, [x[1] for x in selected_answers])
 
+    def regenerate(self):
+        self.get_explanation(force=True)
+
     def userSelect(self):
         session = get_session()
         dialog = UserLoginDialog(session)
@@ -120,14 +124,14 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
 
         session.close()  # Close the session
 
-    def get_explanation(self):
+    def get_explanation(self, force=False):
         QApplication.setOverrideCursor(Qt.WaitCursor)
         try:
             if self.current_question >= 0 and self.current_question < len(
                 self.questions
             ):
                 q = self.questions[self.current_question]
-                if not q.explanation:
+                if not q.explanation or force:
                     explanation = get_gpt_response(q)
                     q.explanation = explanation
                     session = get_session()
@@ -197,6 +201,8 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
 
     def show_answers(self, val):
         self.show_answers_bool = val
+        if val:
+            self.show_answer()
 
     def previous(self):
         if self.current_question > 0 and self.current_question < len(self.questions):

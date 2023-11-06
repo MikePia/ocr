@@ -87,6 +87,9 @@ color: rgb(255, 255, 255);
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:22pt; font-weight:700; color:#deddda;&quot;&gt;Question:&lt;/span&gt;&lt;/p&gt;&lt;p class=&quot;question&quot;&gt;&lt;span style=&quot; color:#ffffff;&quot;&gt;This is a question about python and you should anser it.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
          </layout>
@@ -340,6 +343,7 @@ background-color: rgb(153, 193, 241);</string>
     <addaction name="actionStart_Quiz"/>
     <addaction name="actionUser_Login"/>
     <addaction name="actionSet_Item_Correct"/>
+    <addaction name="actionRegenerate"/>
    </widget>
    <addaction name="filemenu"/>
   </widget>
@@ -357,6 +361,14 @@ background-color: rgb(153, 193, 241);</string>
   <action name="actionSet_Item_Correct">
    <property name="text">
     <string>Set Answer Correct</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+K</string>
+   </property>
+  </action>
+  <action name="actionRegenerate">
+   <property name="text">
+    <string>Regenerate gpt response</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>

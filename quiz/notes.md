@@ -28,6 +28,33 @@ docker run -p 5432:5432 -d \
 psql company -h localhost -U postgres
 
 docker exec -it [id] psql -U postgres company
-
+docker exec -it 81af49 psql -U postgres company
 ```
+
+### Backing up the database
+Had to do this in the container because my local psql version refused to run on the the version in the container
+
+psql (PostgreSQL) 14.9 (Ubuntu 14.9-0ubuntu0.22.04.1)
+psql (PostgreSQL) 16.0 (Debian 16.0-1.pgdg120+1)
+```bash
+docker exec -it 81af49 bash
+pg_dump -U postgres -W -F t company > backup_company.tar
+```
+Used the download command in the vscode docker extension to retrieve it
+
+### alembic migrations
+#### setup
+pip install alembic
+alembic init alembic
+<!-- in alembic.ini -->
+sqlalchemy.url = driver://user:pass@localhost/dbname
+<!-- in alembic/env.py -->
+from myapp.models import Base  # Replace with your actual import
+target_metadata = Base.metadata
+
+#### And here is the ongoing process
+alembic revision --autogenerate -m "Add cascade delete"
+alembic upgrade head
+
+
 

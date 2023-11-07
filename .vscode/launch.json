@@ -5,6 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: Create Question",
+            "type": "python",
+            "request": "launch",
+            "module": "quiz.view.create_question",
+            "justMyCode": true
+        },
+        {
             "name": "Python: Login Module",
             "type": "python",
             "request": "launch",

@@ -1,10 +1,12 @@
 """Tools to process images of a quiz and extract the quizz from images"""
 
+import logging
 import tkinter as tk
 from tkinter import Canvas
 from PIL import Image, ImageTk
 import csv
 import re
+
 import cv2
 
 import pytesseract
@@ -14,12 +16,31 @@ import os
 class FreelancerQuizOcr:
     questions = []
 
+    def __init__(self):
+        self.questions = []
+        self.current_image_index = -1
+        self.images = []
+        self.current_image = None
+
+    def next_image(self):
+        if self.current_image_index < len(self.images) - 1:
+            self.current_image_index += 1
+            self.current_image = self.images[self.current_image_index]
+            return self.process_file(self.current_image)
+        return None
+
     def process_file(self, fn):
-        self.fn = fn
-        assert os.path.exists(fn)
-        self.img = cv2.imread(fn)
-        text = self.ocr_core(self.img)
-        self.interpret_question(text)
+        try:
+            self.fn = fn
+            assert os.path.exists(fn)
+            self.img = cv2.imread(fn)
+            text = self.ocr_core(self.img)
+            final_text = self.interpret_question(text)
+        except Exception as e:
+            logger.exception(str(e))
+        return final_text
+
+        return ""
 
     def interpret_question(self, text):
         lines = text.split("\n")
@@ -94,52 +115,6 @@ class FreelancerQuizOcr:
                 writer.writerow(
                     {"question": q["question"], "answers": ", ".join(q["answers"])}
                 )
-
-    def user_edit(self, question, answers, img_path):
-        """
-        Display the image, extracted question, and answers to the user and allow them to edit.
-        Returns the edited question and answers.
-        """
-
-        def on_save():
-            edited_question.set(question_entry.get())
-            edited_answers[:] = [ans_entry.get() for ans_entry in answer_entries]
-            root.destroy()
-
-        root = tk.Tk()
-        root.title("Edit Question & Answers")
-
-        # Display image
-        img = Image.open(img_path)
-        img = img.resize((600, 400))  # Resize for display purposes. Adjust as needed.
-        img_photo = ImageTk.PhotoImage(img)
-
-        canvas = Canvas(root, width=600, height=400)
-        canvas.pack(pady=10)
-        canvas.create_image(0, 0, anchor=tk.NW, image=img_photo)
-
-        tk.Label(root, text="Question:").pack(pady=(20, 10))
-        question_entry = tk.Entry(root, width=70)
-        question_entry.pack(pady=10)
-        question_entry.insert(0, question)
-
-        tk.Label(root, text="Answers:").pack(pady=20)
-        answer_entries = []
-        for answer in answers:
-            ans_entry = tk.Entry(root, width=70)
-            ans_entry.pack(pady=5)
-            ans_entry.insert(0, answer)
-            answer_entries.append(ans_entry)
-
-        save_btn = tk.Button(root, text="Save", command=on_save)
-        save_btn.pack(pady=20)
-
-        edited_question = tk.StringVar(value=question)
-        edited_answers = answers.copy()
-
-        root.mainloop()
-
-        return edited_question.get(), edited_answers
 
 
 if __name__ == "__main__":

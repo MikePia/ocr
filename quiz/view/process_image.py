@@ -15,10 +15,10 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QAbstractButton, QApplication, QDialog, QDialogButtonBox,
-    QFrame, QHBoxLayout, QLabel, QLineEdit,
-    QPushButton, QSizePolicy, QSpacerItem, QVBoxLayout,
-    QWidget)
+from PySide6.QtWidgets import (QApplication, QDialog, QFrame, QHBoxLayout,
+    QLabel, QLineEdit, QPushButton, QSizePolicy,
+    QSpacerItem, QVBoxLayout, QWidget)
+import resources_rc
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
@@ -57,6 +57,9 @@ class Ui_Dialog(object):
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.process_directory_pb = QPushButton(self.frame_4)
         self.process_directory_pb.setObjectName(u"process_directory_pb")
+        icon = QIcon()
+        icon.addFile(u":/icons/images/directory.png", QSize(), QIcon.Normal, QIcon.On)
+        self.process_directory_pb.setIcon(icon)
 
         self.horizontalLayout_2.addWidget(self.process_directory_pb)
 
@@ -80,6 +83,10 @@ class Ui_Dialog(object):
         self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.process_image_pb = QPushButton(self.frame_5)
         self.process_image_pb.setObjectName(u"process_image_pb")
+        self.process_image_pb.setMinimumSize(QSize(100, 0))
+        icon1 = QIcon()
+        icon1.addFile(u":/icons/images/image.png", QSize(), QIcon.Normal, QIcon.On)
+        self.process_image_pb.setIcon(icon1)
 
         self.horizontalLayout_3.addWidget(self.process_image_pb)
 
@@ -107,7 +114,9 @@ class Ui_Dialog(object):
         self.frame_2.setFrameShape(QFrame.StyledPanel)
         self.frame_2.setFrameShadow(QFrame.Raised)
         self.verticalLayout_3 = QVBoxLayout(self.frame_2)
+        self.verticalLayout_3.setSpacing(0)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.verticalLayout_3.setContentsMargins(0, 0, -1, 0)
         self.image_widget = QWidget(self.frame_2)
         self.image_widget.setObjectName(u"image_widget")
         sizePolicy1 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
@@ -140,14 +149,18 @@ class Ui_Dialog(object):
         self.widget_2 = QWidget(self.form_edit_widget)
         self.widget_2.setObjectName(u"widget_2")
         self.verticalLayout_5 = QVBoxLayout(self.widget_2)
+        self.verticalLayout_5.setSpacing(0)
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
+        self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
         self.frame_6 = QFrame(self.widget_2)
         self.frame_6.setObjectName(u"frame_6")
         self.frame_6.setMaximumSize(QSize(16777215, 100))
         self.frame_6.setFrameShape(QFrame.StyledPanel)
         self.frame_6.setFrameShadow(QFrame.Raised)
         self.verticalLayout_6 = QVBoxLayout(self.frame_6)
+        self.verticalLayout_6.setSpacing(0)
         self.verticalLayout_6.setObjectName(u"verticalLayout_6")
+        self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
         self.label = QLabel(self.frame_6)
         self.label.setObjectName(u"label")
         self.label.setMaximumSize(QSize(16777215, 30))
@@ -176,6 +189,30 @@ class Ui_Dialog(object):
 
         self.verticalLayout_5.addWidget(self.answer_frame)
 
+        self.frame_7 = QFrame(self.widget_2)
+        self.frame_7.setObjectName(u"frame_7")
+        self.frame_7.setMaximumSize(QSize(16777215, 50))
+        self.frame_7.setFrameShape(QFrame.StyledPanel)
+        self.frame_7.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_6 = QHBoxLayout(self.frame_7)
+        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
+        self.horizontalSpacer = QSpacerItem(970, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_6.addItem(self.horizontalSpacer)
+
+        self.pushButton = QPushButton(self.frame_7)
+        self.pushButton.setObjectName(u"pushButton")
+        self.pushButton.setMaximumSize(QSize(75, 16777215))
+        self.pushButton.setLayoutDirection(Qt.LeftToRight)
+        icon2 = QIcon()
+        icon2.addFile(u":/icons/images/done.gif", QSize(), QIcon.Normal, QIcon.On)
+        self.pushButton.setIcon(icon2)
+
+        self.horizontalLayout_6.addWidget(self.pushButton)
+
+
+        self.verticalLayout_5.addWidget(self.frame_7)
+
 
         self.horizontalLayout_4.addWidget(self.widget_2)
 
@@ -187,12 +224,18 @@ class Ui_Dialog(object):
         self.add_answer_pb = QPushButton(self.widget)
         self.add_answer_pb.setObjectName(u"add_answer_pb")
         self.add_answer_pb.setStyleSheet(u"")
+        icon3 = QIcon()
+        icon3.addFile(u":/icons/images/add.png", QSize(), QIcon.Normal, QIcon.On)
+        self.add_answer_pb.setIcon(icon3)
 
         self.verticalLayout_4.addWidget(self.add_answer_pb)
 
         self.delete_answer_pb = QPushButton(self.widget)
         self.delete_answer_pb.setObjectName(u"delete_answer_pb")
         self.delete_answer_pb.setStyleSheet(u"")
+        icon4 = QIcon()
+        icon4.addFile(u":/icons/images/delete.png", QSize(), QIcon.Normal, QIcon.On)
+        self.delete_answer_pb.setIcon(icon4)
 
         self.verticalLayout_4.addWidget(self.delete_answer_pb)
 
@@ -202,11 +245,17 @@ class Ui_Dialog(object):
 
         self.next_btn = QPushButton(self.widget)
         self.next_btn.setObjectName(u"next_btn")
+        icon5 = QIcon()
+        icon5.addFile(u":/icons/images/next.png", QSize(), QIcon.Normal, QIcon.On)
+        self.next_btn.setIcon(icon5)
 
         self.verticalLayout_4.addWidget(self.next_btn)
 
         self.save_btn = QPushButton(self.widget)
         self.save_btn.setObjectName(u"save_btn")
+        icon6 = QIcon()
+        icon6.addFile(u":/icons/images/save.png", QSize(), QIcon.Normal, QIcon.On)
+        self.save_btn.setIcon(icon6)
 
         self.verticalLayout_4.addWidget(self.save_btn)
 
@@ -222,12 +271,6 @@ class Ui_Dialog(object):
 
         self.verticalLayout.addWidget(self.frame_3)
 
-        self.buttonBox = QDialogButtonBox(Dialog)
-        self.buttonBox.setObjectName(u"buttonBox")
-        self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
-
-        self.verticalLayout.addWidget(self.buttonBox)
-
 
         self.retranslateUi(Dialog)
 
@@ -240,6 +283,7 @@ class Ui_Dialog(object):
         self.process_image_pb.setText(QCoreApplication.translate("Dialog", u"Process Image", None))
         self.image_label.setText("")
         self.label.setText(QCoreApplication.translate("Dialog", u"Question", None))
+        self.pushButton.setText(QCoreApplication.translate("Dialog", u"Close", None))
 #if QT_CONFIG(tooltip)
         self.add_answer_pb.setToolTip(QCoreApplication.translate("Dialog", u"<html><head/><body><p><span style=\" font-size:12pt; color:#f6f5f4;\">Will add an answer edit to the end of the list</span></p></body></html>", None))
 #endif // QT_CONFIG(tooltip)

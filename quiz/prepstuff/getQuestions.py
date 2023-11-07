@@ -65,10 +65,10 @@ class FreelancerQuizOcr:
 
     def cleanText(self, text):
         """Extract alphanumeric text, numbers, underscores, spaces, and hyphens from a str"""
-        text = re.sub(r"[^a-zA-Z0-9_\- ]", "", text)
-        text = text.strip()
-        print(text)
-        return text
+        new_text = re.sub(r"[^a-zA-Z0-9 \.\-\?\(\)_,]", "", text)
+
+        new_text = new_text.strip()
+        return new_text
 
     def ocr_core(self, img):
         text = pytesseract.image_to_string(img)

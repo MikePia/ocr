@@ -113,6 +113,10 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
         self.get_explanation(force=True)
 
     def find_duplicates(self):
+        """Iterate through all questions and search for near duplicates to the current question.
+        If found, pop up a dialog offering to delete one or the other question. Short circuit if
+        the user chooses to delete the current question.
+        """
         if not self.user or self.user.role != "admin":
             QMessageBox.warning(self, "Error", "You must be an admin to do this")
             return

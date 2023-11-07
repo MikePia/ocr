@@ -170,12 +170,9 @@ class Question(Base):
         session = get_session()
         try:
             # Create a new question object
-            new_question = cls(question=question)
-
-            # Append answers to the question, marking the first one as the right answer
-            for idx, answer_text in enumerate(answers):
-                new_answer = Answer(answer=answer_text, is_right_answer=(idx == 0))
-                new_question.answers.append(new_answer)
+            new_question = Question(
+                question=question, answers=[Answer(answer=x) for x in answers]
+            )
 
             # Add the question (with its answers) to the session
             session.add(new_question)

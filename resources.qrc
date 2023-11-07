@@ -1,0 +1,14 @@
+<RCC>
+  <qresource prefix="icons">
+  <file>./images/add.png</file>
+  <file>./images/delete.png</file>
+  <file>./images/directory.png</file>
+  <file>./images/done.gif</file>
+  <file>./images/image.png</file>
+  <file>./images/next.png</file>
+  <file>./images/pyside_icon.jpg</file>
+  <file>./images/quizzer.png</file>
+  <file>./images/save.png</file>
+  <file>./images/ZSLogo1.png</file>
+  </qresource>
+</RCC>

@@ -89,6 +89,11 @@ color: rgb(246, 245, 244);</string>
            <property name="text">
             <string>Process Directory</string>
            </property>
+           <property name="icon">
+            <iconset>
+             <normalon>:/icons/images/directory.png</normalon>
+            </iconset>
+           </property>
           </widget>
          </item>
          <item>
@@ -128,8 +133,19 @@ color: rgb(36, 31, 49);</string>
          </property>
          <item>
           <widget class="QPushButton" name="process_image_pb">
+           <property name="minimumSize">
+            <size>
+             <width>100</width>
+             <height>0</height>
+            </size>
+           </property>
            <property name="text">
             <string>Process Image</string>
+           </property>
+           <property name="icon">
+            <iconset>
+             <normalon>:/icons/images/image.png</normalon>
+            </iconset>
            </property>
           </widget>
          </item>
@@ -165,6 +181,18 @@ color: rgb(36, 31, 49);</string>
          <enum>QFrame::Raised</enum>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_3">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
          <item>
           <widget class="QWidget" name="image_widget" native="true">
            <property name="sizePolicy">
@@ -206,6 +234,21 @@ color: rgb(246, 245, 244);</string>
             <item>
              <widget class="QWidget" name="widget_2" native="true">
               <layout class="QVBoxLayout" name="verticalLayout_5">
+               <property name="spacing">
+                <number>0</number>
+               </property>
+               <property name="leftMargin">
+                <number>0</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="rightMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QFrame" name="frame_6">
                  <property name="maximumSize">
@@ -221,6 +264,21 @@ color: rgb(246, 245, 244);</string>
                   <enum>QFrame::Raised</enum>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_6">
+                  <property name="spacing">
+                   <number>0</number>
+                  </property>
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
                   <item>
                    <widget class="QLabel" name="label">
                     <property name="maximumSize">
@@ -261,6 +319,58 @@ color: rgb(36, 31, 49);</string>
                  </property>
                 </widget>
                </item>
+               <item>
+                <widget class="QFrame" name="frame_7">
+                 <property name="maximumSize">
+                  <size>
+                   <width>16777215</width>
+                   <height>50</height>
+                  </size>
+                 </property>
+                 <property name="frameShape">
+                  <enum>QFrame::StyledPanel</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Raised</enum>
+                 </property>
+                 <layout class="QHBoxLayout" name="horizontalLayout_6">
+                  <item>
+                   <spacer name="horizontalSpacer">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>970</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="pushButton">
+                    <property name="maximumSize">
+                     <size>
+                      <width>75</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="layoutDirection">
+                     <enum>Qt::LeftToRight</enum>
+                    </property>
+                    <property name="text">
+                     <string>Close</string>
+                    </property>
+                    <property name="icon">
+                     <iconset>
+                      <normalon>:/icons/images/done.gif</normalon>
+                     </iconset>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
               </layout>
              </widget>
             </item>
@@ -284,6 +394,11 @@ color: rgb(36, 31, 49);</string>
                  <property name="text">
                   <string>Add Answer</string>
                  </property>
+                 <property name="icon">
+                  <iconset>
+                   <normalon>:/icons/images/add.png</normalon>
+                  </iconset>
+                 </property>
                 </widget>
                </item>
                <item>
@@ -296,6 +411,11 @@ color: rgb(36, 31, 49);</string>
                  </property>
                  <property name="text">
                   <string>Delete Answer</string>
+                 </property>
+                 <property name="icon">
+                  <iconset>
+                   <normalon>:/icons/images/delete.png</normalon>
+                  </iconset>
                  </property>
                 </widget>
                </item>
@@ -320,6 +440,11 @@ color: rgb(36, 31, 49);</string>
                  <property name="text">
                   <string>Next</string>
                  </property>
+                 <property name="icon">
+                  <iconset>
+                   <normalon>:/icons/images/next.png</normalon>
+                  </iconset>
+                 </property>
                 </widget>
                </item>
                <item>
@@ -329,6 +454,11 @@ color: rgb(36, 31, 49);</string>
                  </property>
                  <property name="text">
                   <string>Save Question</string>
+                 </property>
+                 <property name="icon">
+                  <iconset>
+                   <normalon>:/icons/images/save.png</normalon>
+                  </iconset>
                  </property>
                 </widget>
                </item>
@@ -344,15 +474,10 @@ color: rgb(36, 31, 49);</string>
      </layout>
     </widget>
    </item>
-   <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -27,6 +27,7 @@ class QuizProcessingDialog(QDialog, Ui_Dialog):
         self.current_image_index = -1
         self.images = []
         self.answer_edits = []
+        self.raw_question = []
 
         # Connect buttons
         self.process_directory_pb.clicked.connect(self.select_directory)
@@ -62,10 +63,29 @@ class QuizProcessingDialog(QDialog, Ui_Dialog):
             current_image_path = self.images[self.current_image_index]
             self.display_image(current_image_path)
             self.ocr_processor.process_file(current_image_path)
+            self.raw_question = self.ocr_processor.question
+            self.question_edit.setText(self.raw_question[0])
+            self.answer_edits = []
+            # create a vertical layout and add it to the answer_frame
+            self.answer_layout = QVBoxLayout()
+            self.answer_frame.setLayout(self.answer_layout)
+            # self.answer_frame
+
+            for i, answer in enumerate(self.raw_question[1]):
+                answer_edit = QLineEdit(answer)
+                answer_edit.setStyleSheet(
+                    "background-color: rgb(255, 255, 255);color: rgb(36, 31, 49);"
+                )
+
+                self.answer_edits.append(answer_edit)
+                self.answer_layout.addWidget(answer_edit)
+                self.answer_layout.setAlignment(answer_edit, Qt.AlignTop)
+                answer_edit.setText(answer)
 
     def clear_form(self):
         self.image_label.clear()
         self.question_edit.clear()
+        self.raw_question = []
         for ans_edit in self.answer_edits:
             ans_edit.clear()
 

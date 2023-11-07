@@ -275,6 +275,9 @@ color: rgb(36, 31, 49);</string>
               <layout class="QVBoxLayout" name="verticalLayout_4">
                <item>
                 <widget class="QPushButton" name="add_answer_pb">
+                 <property name="toolTip">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; color:#f6f5f4;&quot;&gt;Will add an answer edit to the end of the list&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
                  <property name="styleSheet">
                   <string notr="true"/>
                  </property>
@@ -285,6 +288,9 @@ color: rgb(36, 31, 49);</string>
                </item>
                <item>
                 <widget class="QPushButton" name="delete_answer_pb">
+                 <property name="toolTip">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#f6f5f4;&quot;&gt;Will delete the last answer edit in the list&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
                  <property name="styleSheet">
                   <string notr="true"/>
                  </property>
@@ -308,6 +314,9 @@ color: rgb(36, 31, 49);</string>
                </item>
                <item>
                 <widget class="QPushButton" name="next_btn">
+                 <property name="toolTip">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#f6f5f4;&quot;&gt;Proceed to the next question if there is one.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
                  <property name="text">
                   <string>Next</string>
                  </property>
@@ -315,6 +324,9 @@ color: rgb(36, 31, 49);</string>
                </item>
                <item>
                 <widget class="QPushButton" name="save_btn">
+                 <property name="toolTip">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Save as a new question in the database and proceed to the next question if there is one&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
                  <property name="text">
                   <string>Save Question</string>
                  </property>

@@ -12,11 +12,15 @@ import cv2
 import pytesseract
 import os
 
+logger = logging.getLogger(__name__)
+
 
 class FreelancerQuizOcr:
     questions = []
+    question = []
 
     def __init__(self):
+        self.question = []
         self.questions = []
         self.current_image_index = -1
         self.images = []
@@ -31,6 +35,7 @@ class FreelancerQuizOcr:
 
     def process_file(self, fn):
         try:
+            self.question = []
             self.fn = fn
             assert os.path.exists(fn)
             self.img = cv2.imread(fn)
@@ -55,13 +60,8 @@ class FreelancerQuizOcr:
                     real_answers.append(answer)
                 else:
                     break
-        edited_question, edited_answers = self.user_edit(
-            question, real_answers, self.fn
-        )
-
-        self.questions.append({"question": edited_question, "answers": edited_answers})
-
-        print()
+        self.question = [question, real_answers]
+        return self.question
 
     def cleanText(self, text):
         """Extract alphanumeric text, numbers, underscores, spaces, and hyphens from a str"""

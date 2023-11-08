@@ -1,4 +1,4 @@
-# A project to create and run quizes.
+# A program to create and run quizes.
 ## Features
 * GUI Written in Pyside6
 * Explanation of answers dynamiclly retrieved from openai and stored to your database
@@ -14,4 +14,6 @@ This will connect to username postgres on the localhost
 
 Create new questions using this tool
 ![Alt text](./images/create_question.png)
+* Uses OCR to extract a quiz question from an image and places the data in a form
+* Use the same tool without an image to create questions
 

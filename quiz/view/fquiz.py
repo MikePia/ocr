@@ -1,18 +1,15 @@
 # pyside6-rcc resources.qrc -o resources_rc.py
 import logging
-import os
 import sys
 
-from PySide6.QtCore import Qt, QSettings, QRect, QByteArray, QPoint
-from PySide6.QtGui import QIcon
+from PySide6.QtCore import Qt, QSettings, QByteArray
+from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtWidgets import (
     QApplication,
     QButtonGroup,
     QDialog,
     QHBoxLayout,
     QLabel,
-    QLineEdit,
-    QListWidget,
     QMainWindow,
     QPushButton,
     QRadioButton,
@@ -20,8 +17,8 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
     QMessageBox,
-    QComboBox,
 )
+from quiz.view.create_question import QuizProcessingDialog
 from quiz.view.login_dlg import UserLoginDialog
 from quiz.view.question_compare_dlg import QuestionComparisonDialog
 
@@ -31,7 +28,6 @@ from quiz.prepstuff.processquestions import get_gpt_response
 from quiz.models.Question import (
     Question,
     QuestionNotes,
-    User,
     get_session,
     Answer,
 )
@@ -39,6 +35,7 @@ from quiz.models.Question import (
 logger = logging.getLogger(__name__)
 
 COMPANY = "ZeroSubstance"
+APPNAME = "FreeQuizApp"
 
 
 class FreeQuiz(QMainWindow, Ui_MainWindow):
@@ -51,6 +48,7 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
     def __init__(self, email=None):
         super(FreeQuiz, self).__init__()
         self.setupUi(self)
+        self.settings = QSettings(COMPANY, APPNAME)
         self.init_window_placement()
         self.setWindowTitle("Free Quiz")
         self.setWindowIcon(QIcon("ZSLogo1.png"))
@@ -61,18 +59,22 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
         self.save_notes_btn.clicked.connect(self.save_notes)
         self.show_answer_btn.clicked.connect(self.show_answer)
         self.show_answers_cb.clicked.connect(self.show_answers)
+        self.submit_btn.clicked.connect(self.submit_question)
 
         self.actionStart_Quiz.triggered.connect(self.start_quiz)
         self.actionStart_Quiz.triggered.connect(self.menu_start)
+        self.actionUser_Login.triggered.connect(self.userSelect)
         self.actionSet_Item_Correct.triggered.connect(self.set_item_correct)
         self.actionRegenerate.triggered.connect(self.regenerate)
         self.actionFind_Duplicates.triggered.connect(self.find_duplicates)
+        self.actionCreate_Q.triggered.connect(self.create_question)
+        self.actionDelete_Question.triggered.connect(self.delete_question)
 
         self.login(email)
 
     def init_window_placement(self):
         """Initialize window placement using QSettings."""
-        self.settings = QSettings(COMPANY, "FreeQuizApp")
+
         self.restoreGeometry(self.settings.value("geometry", QByteArray()))
         self.restoreState(self.settings.value("windowState", QByteArray()))
 
@@ -150,16 +152,41 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
             session.close()
             self.get_quiz_questions()
 
+    def create_question(self):
+        dialog = QuizProcessingDialog(self.user)
+        x = dialog.exec()
+        print(x)
+
+    def delete_question(self):
+        if not self.user or self.user.role != "admin":
+            QMessageBox.warning(self, "Error", "You must be an admin to do this")
+            return
+        if self.current_question >= 0 and self.current_question < len(self.questions):
+            q = self.questions[self.current_question]
+            session = get_session()
+            Question.delete_by_id(session, q.id)
+            session.close()
+            self.get_quiz_questions()
+            self.next()
+        else:
+            QMessageBox.warning(self, "Error", "No question selected")
+            return
+        return
+
     def userSelect(self):
         session = get_session()
-        dialog = UserLoginDialog(session)
+        dialog = UserLoginDialog(session, user=self.user)
         if dialog.exec():
             selected_user = dialog.user
             if selected_user:
                 self.user = selected_user
 
     def login(self, email):
-        self.userSelect()
+        """This is the automatic login only. Only used by __init__"""
+        if self.settings.value("save_choice", False):
+            self.user = self.settings.value("selected_user")
+        if not self.user:
+            self.userSelect()
 
     def get_quiz_questions(self):
         session = get_session()  # Get the SQLAlchemy session
@@ -241,11 +268,32 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
             self.show_answers_le.setText(a)
             self.update()
             self.show()
+            return dbanswers
 
     def show_answers(self, val):
         self.show_answers_bool = val
         if val:
             self.show_answer()
+
+    def submit_question(self):
+        if self.current_question >= 0 and self.current_question < len(self.questions):
+            selected_answers = self.get_selected_answers()
+            right_answers = self.show_answer()
+            success = {x[1].strip() for x in selected_answers} == set(right_answers)
+            self.get_explanation()
+            if success:
+                msg = (
+                    '<p> <span style="font-size:22pt; font-weight:700; color:#deddda;"> '
+                    "Congratulations!! </span> </p><p> you are correct!</p>"
+                )
+            else:
+                msg = "<p>Sorry, you are incorrect.</p>"
+
+            submitinfo = QMessageBox.information(
+                self, "Success" if success else "Incorrect", msg
+            )
+            if success:
+                submitinfo.setIconPixmap(QPixmap("images/confetti.png"))
 
     def previous(self):
         if self.current_question > 0 and self.current_question < len(self.questions):

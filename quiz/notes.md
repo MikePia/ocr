@@ -58,3 +58,4 @@ alembic upgrade head
 
 
 
+<a href="https://www.flaticon.com/free-icons/confetti" title="confetti icons">Confetti icons created by pongsakornRed - Flaticon</a>

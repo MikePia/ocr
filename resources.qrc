@@ -10,5 +10,11 @@
   <file>./images/quizzer.png</file>
   <file>./images/save.png</file>
   <file>./images/ZSLogo1.png</file>
+  <file>./images/confetti.png</file>
+  <file>./images/previous.png</file>
+  <file>./images/previous1.png</file>
+  <file>./images/AI.png</file>
+  <file>./images/correct.png</file>
+  <file>./images/test.png</file>
   </qresource>
 </RCC>

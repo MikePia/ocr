@@ -35,16 +35,31 @@ class QuizProcessingDialog(QDialog, Ui_Dialog):
 
         # Connect buttons
         self.process_directory_pb.clicked.connect(self.select_directory)
+        self.process_image_pb.clicked.connect(self.process_image)
         self.next_btn.clicked.connect(self.load_next_image)
         self.add_answer_pb.clicked.connect(self.add_answer_widget)
         self.delete_answer_pb.clicked.connect(self.delete_answer_widget)
         self.save_btn.clicked.connect(self.save_question)
+        self.close_btn.clicked.connect(self.close)
 
     def select_directory(self):
         directory = QFileDialog.getExistingDirectory(self, "Select Directory")
         if directory:
             self.process_directory_le.setText(directory)
             self.load_directory(directory)
+
+    def process_image(self):
+        # image = QFileDialog.getOpenFileName(self, "Open an image file")
+        image, _ = QFileDialog.getOpenFileName(
+            self,
+            "Open an image file",
+            "",
+            "Image Files (*.png *.jpg *.jpeg *.bmp *.gif)",
+        )
+        if image:
+            self.images = [image]
+            self.current_image_index = -1
+            self.load_next_image()
 
     def load_directory(self, directory):
         self.images = [
@@ -86,19 +101,23 @@ class QuizProcessingDialog(QDialog, Ui_Dialog):
             self.clear_form()
 
     def add_answer_widget(self, answer=None):
+        # Ensure the layout is initialized
         if not hasattr(self, "answer_layout") or self.answer_layout is None:
             self.answer_layout = QVBoxLayout()
-            self.answer_frame.setLayout(self.answer_layout)
             self.answer_layout.setSpacing(0)  # Set spacing between widgets to 0
             self.answer_layout.setContentsMargins(0, 0, 0, 0)  # Set margins to 0
+            self.answer_frame.setLayout(self.answer_layout)
+            self.answer_layout.addStretch(1)  # Add stretch at the end of the layout
 
+        # Create the answer QLineEdit
         answer_edit = QLineEdit(answer if answer else "")
         answer_edit.setStyleSheet(
             "background-color: rgb(255, 255, 255); color: rgb(36, 31, 49);"
         )
         self.answer_edits.append(answer_edit)
+
+        # Insert the widget above the stretch
         self.answer_layout.insertWidget(self.answer_layout.count() - 1, answer_edit)
-        # self.answer_layout.setContentsMargins(0, 0, 0, 0)
 
     def delete_answer_widget(self):
         """Remove the last lineedit widget as seen on the screen. That will be the widget just before the stretch"""
@@ -142,6 +161,9 @@ class QuizProcessingDialog(QDialog, Ui_Dialog):
         Question.store_question(question.question, [x.answer for x in question.answers])
         self.load_next_image()
         return
+
+    def close(self) -> bool:
+        return super().close()
 
     def clear_form(self):
         self.image_label.clear()

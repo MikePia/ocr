@@ -20,6 +20,7 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QFrame, QHBoxLayout,
     QLabel, QLineEdit, QListView, QMainWindow,
     QMenu, QMenuBar, QPushButton, QSizePolicy,
     QStatusBar, QTextEdit, QVBoxLayout, QWidget)
+import resources_rc
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -43,6 +44,10 @@ class Ui_MainWindow(object):
         self.actionRegenerate.setObjectName(u"actionRegenerate")
         self.actionFind_Duplicates = QAction(MainWindow)
         self.actionFind_Duplicates.setObjectName(u"actionFind_Duplicates")
+        self.actionCreate_Q = QAction(MainWindow)
+        self.actionCreate_Q.setObjectName(u"actionCreate_Q")
+        self.actionDelete_Question = QAction(MainWindow)
+        self.actionDelete_Question.setObjectName(u"actionDelete_Question")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.horizontalLayout = QHBoxLayout(self.centralwidget)
@@ -110,18 +115,22 @@ class Ui_MainWindow(object):
         self.answers_list_widget = QListView(self.answers_frame)
         self.answers_list_widget.setObjectName(u"answers_list_widget")
         self.answers_list_widget.setFrameShape(QFrame.StyledPanel)
+        self.answers_list_widget.setWordWrap(True)
 
         self.answers_verticalLayout.addWidget(self.answers_list_widget)
 
 
         self.verticalLayout_2.addWidget(self.answers_frame)
 
-        self.pushButton_3 = QPushButton(self.answer_frame)
-        self.pushButton_3.setObjectName(u"pushButton_3")
-        self.pushButton_3.setStyleSheet(u"\n"
+        self.submit_btn = QPushButton(self.answer_frame)
+        self.submit_btn.setObjectName(u"submit_btn")
+        self.submit_btn.setStyleSheet(u"\n"
 "color: rgb(255, 255, 255);")
+        icon1 = QIcon()
+        icon1.addFile(u":/icons/images/test.png", QSize(), QIcon.Normal, QIcon.On)
+        self.submit_btn.setIcon(icon1)
 
-        self.verticalLayout_2.addWidget(self.pushButton_3)
+        self.verticalLayout_2.addWidget(self.submit_btn)
 
         self.button_frame = QFrame(self.answer_frame)
         self.button_frame.setObjectName(u"button_frame")
@@ -133,13 +142,20 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.previous_btn = QPushButton(self.button_frame)
         self.previous_btn.setObjectName(u"previous_btn")
+        icon2 = QIcon()
+        icon2.addFile(u":/icons/images/previous1.png", QSize(), QIcon.Normal, QIcon.On)
+        self.previous_btn.setIcon(icon2)
 
         self.horizontalLayout_2.addWidget(self.previous_btn)
 
         self.next_btn = QPushButton(self.button_frame)
         self.next_btn.setObjectName(u"next_btn")
+        self.next_btn.setLayoutDirection(Qt.RightToLeft)
         self.next_btn.setStyleSheet(u"\n"
 "color: rgb(255, 255, 255);")
+        icon3 = QIcon()
+        icon3.addFile(u":/icons/images/next.png", QSize(), QIcon.Normal, QIcon.On)
+        self.next_btn.setIcon(icon3)
 
         self.horizontalLayout_2.addWidget(self.next_btn)
 
@@ -172,6 +188,9 @@ class Ui_MainWindow(object):
         self.explanation_btn = QPushButton(self.explanation_frame)
         self.explanation_btn.setObjectName(u"explanation_btn")
         self.explanation_btn.setStyleSheet(u"color: rgb(255, 255, 255);")
+        icon4 = QIcon()
+        icon4.addFile(u":/icons/images/AI.png", QSize(), QIcon.Normal, QIcon.On)
+        self.explanation_btn.setIcon(icon4)
 
         self.verticalLayout_3.addWidget(self.explanation_btn)
 
@@ -193,6 +212,9 @@ class Ui_MainWindow(object):
 
         self.show_answer_btn = QPushButton(self.show_answers_frame)
         self.show_answer_btn.setObjectName(u"show_answer_btn")
+        icon5 = QIcon()
+        icon5.addFile(u":/icons/images/correct.png", QSize(), QIcon.Normal, QIcon.On)
+        self.show_answer_btn.setIcon(icon5)
 
         self.horizontalLayout_3.addWidget(self.show_answer_btn)
 
@@ -225,6 +247,9 @@ class Ui_MainWindow(object):
 
         self.save_notes_btn = QPushButton(self.notes_frame)
         self.save_notes_btn.setObjectName(u"save_notes_btn")
+        icon6 = QIcon()
+        icon6.addFile(u":/icons/images/save.png", QSize(), QIcon.Normal, QIcon.On)
+        self.save_notes_btn.setIcon(icon6)
 
         self.verticalLayout_5.addWidget(self.save_notes_btn)
 
@@ -254,6 +279,8 @@ class Ui_MainWindow(object):
         self.filemenu.addAction(self.actionSet_Item_Correct)
         self.filemenu.addAction(self.actionRegenerate)
         self.filemenu.addAction(self.actionFind_Duplicates)
+        self.filemenu.addAction(self.actionCreate_Q)
+        self.filemenu.addAction(self.actionDelete_Question)
 
         self.retranslateUi(MainWindow)
 
@@ -276,13 +303,24 @@ class Ui_MainWindow(object):
 #if QT_CONFIG(shortcut)
         self.actionFind_Duplicates.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+D", None))
 #endif // QT_CONFIG(shortcut)
+        self.actionCreate_Q.setText(QCoreApplication.translate("MainWindow", u"Create New Question", None))
+        self.actionDelete_Question.setText(QCoreApplication.translate("MainWindow", u"Delete Current Question", None))
+#if QT_CONFIG(shortcut)
+        self.actionDelete_Question.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+D", None))
+#endif // QT_CONFIG(shortcut)
         self.question_label.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:22pt; font-weight:700; color:#deddda;\">Question:</span></p><p class=\"question\"><span style=\" color:#ffffff;\">This is a question about python and you should anser it.</span></p></body></html>", None))
         self.answers_label.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:22pt; color:#deddda;\">Answers:</span></p></body></html>", None))
-        self.pushButton_3.setText(QCoreApplication.translate("MainWindow", u"Submit", None))
+        self.submit_btn.setText(QCoreApplication.translate("MainWindow", u"Submit", None))
+#if QT_CONFIG(tooltip)
+        self.previous_btn.setToolTip(QCoreApplication.translate("MainWindow", u"Use the left arrow <-", None))
+#endif // QT_CONFIG(tooltip)
         self.previous_btn.setText(QCoreApplication.translate("MainWindow", u"Previous Question", None))
 #if QT_CONFIG(shortcut)
         self.previous_btn.setShortcut(QCoreApplication.translate("MainWindow", u"Left", None))
 #endif // QT_CONFIG(shortcut)
+#if QT_CONFIG(tooltip)
+        self.next_btn.setToolTip(QCoreApplication.translate("MainWindow", u"Use the right arrow ->", None))
+#endif // QT_CONFIG(tooltip)
         self.next_btn.setText(QCoreApplication.translate("MainWindow", u"Next Question", None))
 #if QT_CONFIG(shortcut)
         self.next_btn.setShortcut(QCoreApplication.translate("MainWindow", u"Right", None))
@@ -297,6 +335,9 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(tooltip)
         self.show_answer_btn.setText(QCoreApplication.translate("MainWindow", u"Show This Correct Answer", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Take notes", None))
+#if QT_CONFIG(tooltip)
+        self.save_notes_btn.setToolTip(QCoreApplication.translate("MainWindow", u"Save current note to the database", None))
+#endif // QT_CONFIG(tooltip)
         self.save_notes_btn.setText(QCoreApplication.translate("MainWindow", u"Save Notes", None))
 #if QT_CONFIG(shortcut)
         self.save_notes_btn.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+S", None))

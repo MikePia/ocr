@@ -348,7 +348,7 @@ color: rgb(36, 31, 49);</string>
                    </spacer>
                   </item>
                   <item>
-                   <widget class="QPushButton" name="pushButton">
+                   <widget class="QPushButton" name="close_btn">
                     <property name="maximumSize">
                      <size>
                       <width>75</width>

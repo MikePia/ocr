@@ -200,15 +200,15 @@ class Ui_Dialog(object):
 
         self.horizontalLayout_6.addItem(self.horizontalSpacer)
 
-        self.pushButton = QPushButton(self.frame_7)
-        self.pushButton.setObjectName(u"pushButton")
-        self.pushButton.setMaximumSize(QSize(75, 16777215))
-        self.pushButton.setLayoutDirection(Qt.LeftToRight)
+        self.close_btn = QPushButton(self.frame_7)
+        self.close_btn.setObjectName(u"close_btn")
+        self.close_btn.setMaximumSize(QSize(75, 16777215))
+        self.close_btn.setLayoutDirection(Qt.LeftToRight)
         icon2 = QIcon()
         icon2.addFile(u":/icons/images/done.gif", QSize(), QIcon.Normal, QIcon.On)
-        self.pushButton.setIcon(icon2)
+        self.close_btn.setIcon(icon2)
 
-        self.horizontalLayout_6.addWidget(self.pushButton)
+        self.horizontalLayout_6.addWidget(self.close_btn)
 
 
         self.verticalLayout_5.addWidget(self.frame_7)
@@ -283,7 +283,7 @@ class Ui_Dialog(object):
         self.process_image_pb.setText(QCoreApplication.translate("Dialog", u"Process Image", None))
         self.image_label.setText("")
         self.label.setText(QCoreApplication.translate("Dialog", u"Question", None))
-        self.pushButton.setText(QCoreApplication.translate("Dialog", u"Close", None))
+        self.close_btn.setText(QCoreApplication.translate("Dialog", u"Close", None))
 #if QT_CONFIG(tooltip)
         self.add_answer_pb.setToolTip(QCoreApplication.translate("Dialog", u"<html><head/><body><p><span style=\" font-size:12pt; color:#f6f5f4;\">Will add an answer edit to the end of the list</span></p></body></html>", None))
 #endif // QT_CONFIG(tooltip)

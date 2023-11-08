@@ -171,6 +171,9 @@ color: rgb(255, 255, 255);</string>
               <normalon>:/icons/images/test.png</normalon>
              </iconset>
             </property>
+            <property name="shortcut">
+             <string>Return</string>
+            </property>
            </widget>
           </item>
           <item>

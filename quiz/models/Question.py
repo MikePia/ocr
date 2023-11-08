@@ -18,13 +18,17 @@ openai.api_key = os.environ["OPEN_API_KEY"]
 
 
 Base = declarative_base()
-engine = create_engine("postgresql://postgres:s3cr3tp4ssw0rd@localhost:5432/company")
+dburl = os.environ.get("DATABASE_URL")
+# assert (
+#     dburl
+# ), "Environment variable not set. Please place you db connection string DATABASE URL in the file .env"
+if not dburl:
+    dburl = "sqlite:///quiz.db"
+engine = create_engine(dburl)
 
 
 def get_db_connection():
-    engine = create_engine(
-        "postgresql://postgres:s3cr3tp4ssw0rd@localhost:5432/company"
-    )
+    engine = create_engine(dburl)
     connection = engine.connect()
     return (
         connection,

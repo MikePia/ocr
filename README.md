@@ -10,7 +10,7 @@
 ```DATABASE_URL=postgresql://postgres:somepassword@localhost:5432/quiz```
 This will connect to username postgres on the localhost
 
-![Alt text](image.png)
+![Alt text](./images/quizzer.png)
 
 Create new questions using this tool
 ![Alt text](./images/create_question.png)

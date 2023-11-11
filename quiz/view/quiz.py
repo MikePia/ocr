@@ -8,6 +8,7 @@ from PySide6.QtWidgets import (
     QApplication,
     QButtonGroup,
     QDialog,
+    QFileDialog,
     QHBoxLayout,
     QLabel,
     QMainWindow,
@@ -19,11 +20,13 @@ from PySide6.QtWidgets import (
     QMessageBox,
 )
 from quiz.view.create_question import QuizProcessingDialog
+from quiz.view.loadcsv_yesno import LoadCsvYesNo
 from quiz.view.login_dlg import UserLoginDialog
 from quiz.view.question_compare_dlg import QuestionComparisonDialog
+from quiz.view.openai_options_ui import Ui_Openai_dlg
 
 
-from .free_quiz_ui import Ui_MainWindow
+from .quiz_ui import Ui_MainWindow
 from quiz.prepstuff.processquestions import get_gpt_response
 from quiz.models.Question import (
     Question,
@@ -61,14 +64,20 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
         self.show_answers_cb.clicked.connect(self.show_answers)
         self.submit_btn.clicked.connect(self.submit_question)
 
+        # User actions
         self.actionStart_Quiz.triggered.connect(self.start_quiz)
-        self.actionStart_Quiz.triggered.connect(self.menu_start)
         self.actionUser_Login.triggered.connect(self.userSelect)
+        self.actionQuit.triggered.connect(self.quit)
+        self.actionOpenai_opt.triggered.connect(self.openai_opt)
+
+        # Admin actions
+        self.actionStart_Quiz.triggered.connect(self.menu_start)
         self.actionSet_Item_Correct.triggered.connect(self.set_item_correct)
         self.actionRegenerate.triggered.connect(self.regenerate)
         self.actionFind_Duplicates.triggered.connect(self.find_duplicates)
         self.actionCreate_Q.triggered.connect(self.create_question)
         self.actionDelete_Question.triggered.connect(self.delete_question)
+        self.actionLoad_csv.triggered.connect(self.load_csv)
 
         self.login(email)
 
@@ -173,6 +182,67 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
             return
         return
 
+    def load_csv(self):
+        dontask = self.settings.value("load_csv_do_not_ask_again", False)
+        if not dontask or dontask == "false":
+            dialog = LoadCsvYesNo()
+            dialog.exec()
+
+            if dialog.do_not_ask_again:
+                self.settings.setValue("load_csv_do_not_ask_again", True)
+            else:
+                self.settings.setValue("load_csv_do_not_ask_again", False)
+
+            if dialog.user_choice:
+                self.process_csv()
+        else:
+            self.process_csv()
+
+    def process_csv(self):
+        csv_file, _ = QFileDialog.getOpenFileName(
+            self, "Open csv file", "", "CSV Files (*.csv)"
+        )
+        if not csv_file:
+            return
+        with open(csv_file, "r") as f:
+            lines = f.readlines()
+        # Check if the first column is a list of images
+        req = ["question", "answer1", "answer2", "answer3", "answer4"]
+        opt = ["notes", "correct_answer"]
+        columns = lines[0].split(",")
+        columns = [x.strip().lower() for x in columns]
+        if any(x not in columns for x in req):
+            msg = (
+                '<html><head/><body><p><span style="font-size:22pt; font-weight:700; color:#deddda;">'
+                "Unrecognized csv format </span></p> "
+                "<p>Required fields for this csv are: </p> "
+                "<p><b>[question, answer1, answer2, answer3, answer4, ...]</b></p> "
+                "</span></body></html>"
+            )
+            QMessageBox.information(self, "Unrecognized csv format", msg)
+            self.settings.setValue("load_csv_do_not_ask_again", False)
+            return
+        # map the ruquired and optional fields to their index in the csv
+        col_mapping = {
+            field: columns.index(field) for field in req + opt if field in columns
+        }
+        for line in lines[1:]:
+            line = line.split(",")
+            question = line[col_mapping["question"]]
+            answers = line[col_mapping["answer1"] : col_mapping["answer4"] + 1]
+            answers = [x.strip() for x in answers]
+            notes = line[col_mapping.get("notes")] if col_mapping.get("notes") else None
+            correct_answer = (
+                line[col_mapping.get("correct_answer", -1)]
+                if col_mapping.get("correct_answer")
+                else None
+            )
+            if correct_answer:
+                correct_answer = correct_answer.strip().lower()
+            else:
+                correct_answer = None
+            Question.store_question(question, answers, notes, correct_answer)
+
     def userSelect(self):
         session = get_session()
         dialog = UserLoginDialog(session, user=self.user)
@@ -180,6 +250,13 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
             selected_user = dialog.user
             if selected_user:
                 self.user = selected_user
+
+    def quit(self):
+        self.close()
+
+    def openai_opt(self):
+        dialog = Ui_Openai_dlg()
+        dialog.exec()
 
     def login(self, email):
         """This is the automatic login only. Only used by __init__"""

@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>../../images/ZSLogo1.png</normaloff>../../images/ZSLogo1.png</iconset>
+    <normaloff>../../../../../../home/mike/images/ZSLogo1.png</normaloff>../../../../../../home/mike/images/ZSLogo1.png</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0.987, y2:0.579545, stop:0.028065 rgba(30, 82, 139, 255), stop:0.731343 rgba(12, 34, 89, 255));
@@ -393,20 +393,24 @@ color: rgb(255, 255, 255);</string>
    </property>
    <widget class="QMenu" name="filemenu">
     <property name="styleSheet">
-     <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(153, 193, 241);</string>
+     <string notr="true"/>
     </property>
     <property name="title">
      <string>file</string>
     </property>
     <addaction name="separator"/>
-    <addaction name="actionStart_Quiz"/>
     <addaction name="actionUser_Login"/>
+    <addaction name="actionStart_Quiz"/>
+    <addaction name="separator"/>
     <addaction name="actionSet_Item_Correct"/>
     <addaction name="actionRegenerate"/>
     <addaction name="actionFind_Duplicates"/>
     <addaction name="actionCreate_Q"/>
     <addaction name="actionDelete_Question"/>
+    <addaction name="actionLoad_csv"/>
+    <addaction name="separator"/>
+    <addaction name="actionOpenai_opt"/>
+    <addaction name="actionQuit"/>
    </widget>
    <addaction name="filemenu"/>
   </widget>
@@ -456,6 +460,24 @@ background-color: rgb(153, 193, 241);</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="actionLoad_csv">
+   <property name="text">
+    <string>Load Questions From csv</string>
+   </property>
+  </action>
+  <action name="actionQuit">
+   <property name="text">
+    <string>Quit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actionOpenai_opt">
+   <property name="text">
+    <string>openai options</string>
    </property>
   </action>
  </widget>

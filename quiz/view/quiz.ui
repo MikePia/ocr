@@ -477,7 +477,7 @@ color: rgb(255, 255, 255);</string>
   </action>
   <action name="actionOpenai_opt">
    <property name="text">
-    <string>openai options</string>
+    <string>Openai Options</string>
    </property>
   </action>
  </widget>

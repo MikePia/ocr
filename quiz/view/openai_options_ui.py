@@ -24,7 +24,11 @@ class Ui_Openai_dlg(object):
     def setupUi(self, Openai_dlg):
         if not Openai_dlg.objectName():
             Openai_dlg.setObjectName(u"Openai_dlg")
-        Openai_dlg.resize(582, 173)
+        Openai_dlg.resize(758, 249)
+        Openai_dlg.setStyleSheet(u"background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0.987, y2:0.579545, stop:0.028065 rgba(30, 82, 139, 255), stop:0.731343 rgba(12, 34, 89, 255));\n"
+"color: rgb(255, 255, 255);\n"
+"\n"
+"")
         self.verticalLayout = QVBoxLayout(Openai_dlg)
         self.verticalLayout.setSpacing(0)
         self.verticalLayout.setObjectName(u"verticalLayout")
@@ -75,10 +79,10 @@ class Ui_Openai_dlg(object):
 
         self.horizontalLayout_3.addWidget(self.openai_engine_cb)
 
-        self.label_2 = QLabel(self.frame_4)
-        self.label_2.setObjectName(u"label_2")
+        self.choose_engine_lbl = QLabel(self.frame_4)
+        self.choose_engine_lbl.setObjectName(u"choose_engine_lbl")
 
-        self.horizontalLayout_3.addWidget(self.label_2)
+        self.horizontalLayout_3.addWidget(self.choose_engine_lbl)
 
 
         self.verticalLayout_2.addWidget(self.frame_4)
@@ -112,7 +116,7 @@ class Ui_Openai_dlg(object):
     def retranslateUi(self, Openai_dlg):
         Openai_dlg.setWindowTitle(QCoreApplication.translate("Openai_dlg", u"Dialog", None))
         self.label.setText(QCoreApplication.translate("Openai_dlg", u"Openai token", None))
-        self.label_2.setText(QCoreApplication.translate("Openai_dlg", u"Choose the openai engine you wish to use", None))
+        self.choose_engine_lbl.setText(QCoreApplication.translate("Openai_dlg", u"Choose the openai engine you wish to use", None))
         self.openai_close_pb.setText(QCoreApplication.translate("Openai_dlg", u"Close", None))
     # retranslateUi
 

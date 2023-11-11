@@ -23,7 +23,7 @@ from quiz.view.create_question import QuizProcessingDialog
 from quiz.view.loadcsv_yesno import LoadCsvYesNo
 from quiz.view.login_dlg import UserLoginDialog
 from quiz.view.question_compare_dlg import QuestionComparisonDialog
-from quiz.view.openai_options_ui import Ui_Openai_dlg
+from quiz.view.openai_options import Openai
 
 
 from .quiz_ui import Ui_MainWindow
@@ -42,6 +42,7 @@ APPNAME = "FreeQuizApp"
 
 
 class FreeQuiz(QMainWindow, Ui_MainWindow):
+    default_gpt_engine = "gpt-4-1106-preview"
     questions = None
     current_question = -1
     user = None
@@ -52,6 +53,7 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
         super(FreeQuiz, self).__init__()
         self.setupUi(self)
         self.settings = QSettings(COMPANY, APPNAME)
+        self.settings.setValue("default_gpt_engine", self.default_gpt_engine)
         self.init_window_placement()
         self.setWindowTitle("Free Quiz")
         self.setWindowIcon(QIcon("ZSLogo1.png"))
@@ -255,7 +257,7 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
         self.close()
 
     def openai_opt(self):
-        dialog = Ui_Openai_dlg()
+        dialog = Openai()
         dialog.exec()
 
     def login(self, email):
@@ -273,12 +275,16 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
 
     def get_explanation(self, force=False):
         QApplication.setOverrideCursor(Qt.WaitCursor)
+
         try:
             if self.current_question >= 0 and self.current_question < len(
                 self.questions
             ):
                 q = self.questions[self.current_question]
                 if not q.explanation or force:
+                    val = self.settings.value("user_gpt_engine")
+                    if val and val == "None":
+                        return
                     explanation = get_gpt_response(q)
                     q.explanation = explanation
                     session = get_session()

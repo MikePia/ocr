@@ -323,7 +323,7 @@ class Ui_MainWindow(object):
 #if QT_CONFIG(shortcut)
         self.actionQuit.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+Q", None))
 #endif // QT_CONFIG(shortcut)
-        self.actionOpenai_opt.setText(QCoreApplication.translate("MainWindow", u"openai options", None))
+        self.actionOpenai_opt.setText(QCoreApplication.translate("MainWindow", u"Openai Options", None))
         self.question_label.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:22pt; font-weight:700; color:#deddda;\">Question:</span></p><p class=\"question\"><span style=\" color:#ffffff;\">This is a question about python and you should anser it.</span></p></body></html>", None))
         self.answers_label.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:22pt; color:#deddda;\">Answers:</span></p></body></html>", None))
         self.submit_btn.setText(QCoreApplication.translate("MainWindow", u"Submit", None))

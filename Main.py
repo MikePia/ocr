@@ -1,5 +1,5 @@
 import os
-from quiz.view.fquiz import main
+from quiz.view.quiz import main
 from dotenv import load_dotenv
 
 load_dotenv(os.environ["HOME"] + "/.chatgpt")

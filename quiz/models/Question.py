@@ -166,7 +166,9 @@ class Question(Base):
         return f"<Question(id={self.id}, question='{self.question}', explanation='{self.explanation}')>"
 
     @classmethod
-    def store_question(cls, question: str, answers: list):
+    def store_question(
+        cls, question: str, answers: list, notes=None, correct_answer=None
+    ):
         """
         Store the given question and its list of answers.
         The first answer in the list is assumed to be the correct one.

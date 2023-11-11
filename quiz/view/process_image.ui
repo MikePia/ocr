@@ -140,7 +140,7 @@ color: rgb(36, 31, 49);</string>
             </size>
            </property>
            <property name="text">
-            <string>Process Image</string>
+            <string>Open File</string>
            </property>
            <property name="icon">
             <iconset>
@@ -363,7 +363,7 @@ color: rgb(36, 31, 49);</string>
                     </property>
                     <property name="icon">
                      <iconset>
-                      <normalon>:/icons/images/done.gif</normalon>
+                      <normalon>:/icons/images/close.png</normalon>
                      </iconset>
                     </property>
                    </widget>

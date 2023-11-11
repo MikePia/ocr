@@ -16,5 +16,6 @@
   <file>./images/AI.png</file>
   <file>./images/correct.png</file>
   <file>./images/test.png</file>
+  <file>./images/close.png</file>
   </qresource>
 </RCC>

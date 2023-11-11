@@ -5,6 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: load csv",
+            "type": "python",
+            "request": "launch",
+            "module": "quiz.view.loadcsv_yesno",
+            "justMyCode": true
+        },
+        {
             "name": "Python: Create Question",
             "type": "python",
             "request": "launch",

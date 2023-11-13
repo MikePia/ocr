@@ -17,9 +17,9 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
 from PySide6.QtWidgets import (QApplication, QCheckBox, QFrame, QHBoxLayout,
-    QLabel, QLineEdit, QListView, QMainWindow,
-    QMenu, QMenuBar, QPushButton, QSizePolicy,
-    QStatusBar, QTextEdit, QVBoxLayout, QWidget)
+    QLabel, QListView, QMainWindow, QMenu,
+    QMenuBar, QPushButton, QSizePolicy, QStatusBar,
+    QTextEdit, QVBoxLayout, QWidget)
 import resources_rc
 
 class Ui_MainWindow(object):
@@ -54,6 +54,8 @@ class Ui_MainWindow(object):
         self.actionQuit.setObjectName(u"actionQuit")
         self.actionOpenai_opt = QAction(MainWindow)
         self.actionOpenai_opt.setObjectName(u"actionOpenai_opt")
+        self.actionSearch_for_question = QAction(MainWindow)
+        self.actionSearch_for_question.setObjectName(u"actionSearch_for_question")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.horizontalLayout = QHBoxLayout(self.centralwidget)
@@ -87,6 +89,7 @@ class Ui_MainWindow(object):
         sizePolicy1.setHeightForWidth(self.question_label.sizePolicy().hasHeightForWidth())
         self.question_label.setSizePolicy(sizePolicy1)
         self.question_label.setWordWrap(True)
+        self.question_label.setTextInteractionFlags(Qt.LinksAccessibleByMouse|Qt.TextSelectableByMouse)
 
         self.verticalLayout_4.addWidget(self.question_label)
 
@@ -202,6 +205,11 @@ class Ui_MainWindow(object):
 
         self.explanation_edit = QTextEdit(self.explanation_frame)
         self.explanation_edit.setObjectName(u"explanation_edit")
+        self.explanation_edit.setMouseTracking(False)
+        self.explanation_edit.setAcceptDrops(False)
+        self.explanation_edit.setTabChangesFocus(False)
+        self.explanation_edit.setUndoRedoEnabled(False)
+        self.explanation_edit.setTextInteractionFlags(Qt.TextSelectableByMouse)
 
         self.verticalLayout_3.addWidget(self.explanation_edit)
 
@@ -227,8 +235,13 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_3.addWidget(self.show_answers_frame)
 
-        self.show_answers_le = QLineEdit(self.explanation_frame)
+        self.show_answers_le = QLabel(self.explanation_frame)
         self.show_answers_le.setObjectName(u"show_answers_le")
+        sizePolicy4 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        sizePolicy4.setHorizontalStretch(0)
+        sizePolicy4.setVerticalStretch(0)
+        sizePolicy4.setHeightForWidth(self.show_answers_le.sizePolicy().hasHeightForWidth())
+        self.show_answers_le.setSizePolicy(sizePolicy4)
 
         self.verticalLayout_3.addWidget(self.show_answers_le)
 
@@ -280,6 +293,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.filemenu.menuAction())
         self.filemenu.addSeparator()
         self.filemenu.addAction(self.actionUser_Login)
+        self.filemenu.addAction(self.actionSearch_for_question)
         self.filemenu.addAction(self.actionStart_Quiz)
         self.filemenu.addSeparator()
         self.filemenu.addAction(self.actionSet_Item_Correct)
@@ -316,7 +330,7 @@ class Ui_MainWindow(object):
         self.actionCreate_Q.setText(QCoreApplication.translate("MainWindow", u"Create New Question", None))
         self.actionDelete_Question.setText(QCoreApplication.translate("MainWindow", u"Delete Current Question", None))
 #if QT_CONFIG(shortcut)
-        self.actionDelete_Question.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+D", None))
+        self.actionDelete_Question.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+D, Ctrl+D", None))
 #endif // QT_CONFIG(shortcut)
         self.actionLoad_csv.setText(QCoreApplication.translate("MainWindow", u"Load Questions From csv", None))
         self.actionQuit.setText(QCoreApplication.translate("MainWindow", u"Quit", None))
@@ -324,6 +338,10 @@ class Ui_MainWindow(object):
         self.actionQuit.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+Q", None))
 #endif // QT_CONFIG(shortcut)
         self.actionOpenai_opt.setText(QCoreApplication.translate("MainWindow", u"Openai Options", None))
+        self.actionSearch_for_question.setText(QCoreApplication.translate("MainWindow", u"Search for question", None))
+#if QT_CONFIG(shortcut)
+        self.actionSearch_for_question.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+F", None))
+#endif // QT_CONFIG(shortcut)
         self.question_label.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:22pt; font-weight:700; color:#deddda;\">Question:</span></p><p class=\"question\"><span style=\" color:#ffffff;\">This is a question about python and you should anser it.</span></p></body></html>", None))
         self.answers_label.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:22pt; color:#deddda;\">Answers:</span></p></body></html>", None))
         self.submit_btn.setText(QCoreApplication.translate("MainWindow", u"Submit", None))
@@ -353,6 +371,7 @@ class Ui_MainWindow(object):
         self.show_answer_btn.setToolTip(QCoreApplication.translate("MainWindow", u"Use the menu command to set a correct answer", None))
 #endif // QT_CONFIG(tooltip)
         self.show_answer_btn.setText(QCoreApplication.translate("MainWindow", u"Show This Correct Answer", None))
+        self.show_answers_le.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Take notes", None))
 #if QT_CONFIG(tooltip)
         self.save_notes_btn.setToolTip(QCoreApplication.translate("MainWindow", u"Save current note to the database", None))

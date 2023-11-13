@@ -2,7 +2,7 @@
 import logging
 import sys
 
-from PySide6.QtCore import Qt, QSettings, QByteArray
+from PySide6.QtCore import Qt, QSettings, QByteArray, QSize
 from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtWidgets import (
     QApplication,
@@ -10,6 +10,7 @@ from PySide6.QtWidgets import (
     QDialog,
     QFileDialog,
     QHBoxLayout,
+    QInputDialog,
     QLabel,
     QMainWindow,
     QPushButton,
@@ -19,6 +20,8 @@ from PySide6.QtWidgets import (
     QWidget,
     QMessageBox,
 )
+
+# include <QString>
 from quiz.view.create_question import QuizProcessingDialog
 from quiz.view.loadcsv_yesno import LoadCsvYesNo
 from quiz.view.login_dlg import UserLoginDialog
@@ -33,6 +36,7 @@ from quiz.models.Question import (
     QuestionNotes,
     get_session,
     Answer,
+    recreate_tables,
 )
 
 logger = logging.getLogger(__name__)
@@ -45,6 +49,7 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
     default_gpt_engine = "gpt-4-1106-preview"
     questions = None
     current_question = -1
+    selected_questions = []
     user = None
     answer_items = []
     show_answers_bool = False
@@ -71,6 +76,7 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
         self.actionUser_Login.triggered.connect(self.userSelect)
         self.actionQuit.triggered.connect(self.quit)
         self.actionOpenai_opt.triggered.connect(self.openai_opt)
+        self.actionSearch_for_question.triggered.connect(self.search_for_question)
 
         # Admin actions
         self.actionStart_Quiz.triggered.connect(self.menu_start)
@@ -80,6 +86,10 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
         self.actionCreate_Q.triggered.connect(self.create_question)
         self.actionDelete_Question.triggered.connect(self.delete_question)
         self.actionLoad_csv.triggered.connect(self.load_csv)
+
+        recreate_tables()
+        self.get_quiz_questions()
+        print("Num questions:", len(self.questions))
 
         self.login(email)
 
@@ -105,6 +115,7 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
         super(FreeQuiz, self).closeEvent(event)
 
     def menu_start(self):
+        self.selected_questions = []
         self.current_question = -1
         self.next()
 
@@ -121,6 +132,14 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
             selected_answers = self.get_selected_answers()
             q = self.questions[self.current_question]
             Answer.set_correct_answers(q.id, [x[1] for x in selected_answers])
+            self.current_question -= 1
+            self.next()
+
+            # Reselect the selected_answers
+            for answer in selected_answers:
+                answer_index = answer[0]
+                answer_widget = self.answer_items[answer_index][0]
+                answer_widget.setChecked(True)
 
     def regenerate(self):
         self.get_explanation(force=True)
@@ -130,6 +149,7 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
         If found, pop up a dialog offering to delete one or the other question. Short circuit if
         the user chooses to delete the current question.
         """
+        self.selected_questions = []
         if not self.user or self.user.role != "admin":
             QMessageBox.warning(self, "Error", "You must be an admin to do this")
             return
@@ -148,6 +168,7 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
 
                     if result == 1:
                         # Delete current question and exit the loop
+
                         Question.delete_by_id(session, current_question.id)
                         self.current_question = -1
                         return
@@ -260,6 +281,33 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
         dialog = Openai()
         dialog.exec()
 
+    def search_for_question(self):
+        dialog = QInputDialog(self)
+        dialog.setWindowTitle("Search for a question")
+        dialog.setLabelText("Enter the text to search for:")
+        dialog.resize(600, 200)
+
+        ok = dialog.exec()
+        text = dialog.textValue()
+
+        if ok:
+            # Process the input string
+            print("You entered:", text)
+            # Search questions for matches
+            self.get_quiz_questions()
+            qs = [
+                i
+                for i, x in enumerate(self.questions)
+                if text.lower() in x.question.lower()
+            ]
+            ids = [x.id for x in self.questions if text.lower() in x.question.lower()]
+
+            QMessageBox.information(
+                self, "Search Results", f"Found {len(qs)} questions. Ids: {ids}"
+            )
+            self.selected_questions = qs
+            self.next()
+
     def login(self, email):
         """This is the automatic login only. Only used by __init__"""
         if self.settings.value("save_choice", False):
@@ -269,6 +317,7 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
 
     def get_quiz_questions(self):
         session = get_session()  # Get the SQLAlchemy session
+        print(session.is_active)
         self.questions = Question.get_all_questions(session)
 
         session.close()  # Close the session
@@ -349,8 +398,8 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
                     )
             a = ": ".join(printed_answers)
             self.show_answers_le.setText(a)
-            self.update()
-            self.show()
+            # self.update()
+            # self.repaint()
             return dbanswers
 
     def show_answers(self, val):
@@ -372,14 +421,14 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
             else:
                 msg = "<p>Sorry, you are incorrect.</p>"
 
-            submitinfo = QMessageBox.information(
-                self, "Success" if success else "Incorrect", msg
-            )
-            if success:
-                submitinfo.setIconPixmap(QPixmap("images/confetti.png"))
+            QMessageBox.information(self, "Success" if success else "Incorrect", msg)
 
     def previous(self):
-        if self.current_question > 0 and self.current_question < len(self.questions):
+        if (
+            not self.selected_questions
+            and self.current_question > 0
+            and self.current_question < len(self.questions)
+        ):
             self.current_question -= 2
         else:
             self.current_question = -1
@@ -390,6 +439,8 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
         if not self.questions:
             self.get_quiz_questions()
             self.current_question = -1
+        if self.selected_questions:
+            self.current_question = self.selected_questions.pop(0) - 1
 
         if self.current_question < len(self.questions) - 1:
             self.current_question += 1
@@ -404,6 +455,7 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
             # self.answers_label.setText(html)
             self.answers_verticalLayout.addWidget(new_answers_label)
             self.answers_verticalLayout.setAlignment(new_answers_label, Qt.AlignTop)
+            self.statusBar().showMessage("Question id: " + str(q.id))
             for answer in q.answers:
                 if not answer.answer or not answer.answer.strip():  # Skip empty answers
                     continue  # Skip empty answers
@@ -447,6 +499,9 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
             self.show()
             self.update()
         else:
+            if self.selected_questions:
+                # There are questions on the short list
+                return
             # When there are no more questions
             dialog = EndOfQuizDialog(self)
             result = dialog.exec()

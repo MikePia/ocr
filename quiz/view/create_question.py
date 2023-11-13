@@ -1,12 +1,13 @@
 from PySide6.QtWidgets import (
-    QDialog,
-    QVBoxLayout,
-    QPushButton,
-    QLabel,
-    QFileDialog,
-    QLineEdit,
     QApplication,
+    QDialog,
+    QFileDialog,
+    QLabel,
+    QLineEdit,
     QMessageBox,
+    QPushButton,
+    QSpacerItem,
+    QVBoxLayout,
 )
 from PySide6.QtGui import QPixmap
 from PySide6.QtCore import Qt
@@ -119,12 +120,19 @@ class QuizProcessingDialog(QDialog, Ui_Dialog):
         # Insert the widget above the stretch
         self.answer_layout.insertWidget(self.answer_layout.count() - 1, answer_edit)
 
+    def get_widget_to_remove(self):
+        for i in reversed(range(self.answer_layout.count())):
+            widget = self.answer_layout.itemAt(i).widget()
+            if widget is not None and isinstance(widget, QLineEdit):
+                return widget
+
     def delete_answer_widget(self):
         """Remove the last lineedit widget as seen on the screen. That will be the widget just before the stretch"""
         if self.answer_layout.count() > 1:
             # Get the widget at the second-to-last position (just before the stretch)
             widget_index = self.answer_layout.count() - 2
-            widget_to_remove = self.answer_layout.itemAt(widget_index).widget()
+            # widget_to_remove = self.answer_layout.itemAt(widget_index).widget()
+            widget_to_remove = self.get_widget_to_remove()
 
             if widget_to_remove:
                 self.answer_layout.removeWidget(widget_to_remove)

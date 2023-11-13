@@ -1,9 +1,19 @@
 import logging
+import random
 
 import openai
 import os
 
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Text, Boolean
+from sqlalchemy import (
+    create_engine,
+    Column,
+    Integer,
+    String,
+    ForeignKey,
+    Text,
+    Boolean,
+    Table,
+)
 from sqlalchemy.orm import relationship, declarative_base, sessionmaker, joinedload
 from dotenv import load_dotenv
 
@@ -11,17 +21,22 @@ from sqlalchemy.types import Enum
 
 from quiz.models.utils.equality import compare_sentences, compare_sets
 
+
+# from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
+
 logger = logging.getLogger(__name__)
 
-load_dotenv(os.environ["HOME"] + "/.chatgpt")
+load_dotenv(os.environ["HOME"] + "/.quizzer_rc")
 openai.api_key = os.environ["OPEN_API_KEY"]
 
 
 Base = declarative_base()
 dburl = os.environ.get("DATABASE_URL")
-# assert (
-#     dburl
-# ), "Environment variable not set. Please place you db connection string DATABASE URL in the file .env"
+assert (
+    dburl
+), "Environment variable not set. Please place you db connection string DATABASE URL in the file .env"
 if not dburl:
     dburl = "sqlite:///quiz.db"
 engine = create_engine(dburl)
@@ -153,14 +168,103 @@ class QuestionNotes(Base):
             session.close()
 
 
+# Association table for the many-to-many relationship between Tests and Questions
+TestQuestions = Table(
+    "test_questions",
+    Base.metadata,
+    Column("test_id", Integer, ForeignKey("tests.id"), primary_key=True),
+    Column("question_id", Integer, ForeignKey("questions.id"), primary_key=True),
+)
+
+
+class Test(Base):
+    __tablename__ = "tests"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
+    subject = Column(String)
+    level = Column(String)
+
+    # Relationship to questions
+    questions = relationship(
+        "Question", secondary=TestQuestions, back_populates="tests"
+    )
+
+    def __repr__(self):
+        return f"<Test(id={self.id}, name='{self.name}', subject='{self.subject}', level='{self.level}')>"
+
+
+
+  @classmethod
+    def create_test(cls, session, name: str, subject: str, level: str, question_ids=None):
+        test = cls(name=name, subject=subject, level=level)
+        session.add(test)
+        session.commit()
+
+        if question_ids:
+            cls.add_to_test(session, test.id, question_ids)
+
+        return test
+
+    @classmethod
+    def add_to_test(cls, session, test_id: int, question_ids):
+        test = session.query(cls).get(test_id)
+        if not test:
+            raise ValueError("Test not found")
+
+        if isinstance(question_ids, int):
+            question_ids = [question_ids]
+
+        for qid in question_ids:
+            question = session.query(Question).get(qid)
+            if question:
+                test.questions.append(question)
+
+        session.commit()
+
+    @classmethod
+    def remove_from_test(cls, session, test_id: int, question_ids):
+        test = session.query(cls).get(test_id)
+        if not test:
+            raise ValueError("Test not found")
+
+        if isinstance(question_ids, int):
+            question_ids = [question_ids]
+
+        for qid in question_ids:
+            question = session.query(Question).get(qid)
+            if question in test.questions:
+                test.questions.remove(question)
+
+        session.commit()
+
+    @classmethod
+    def get_random_test(cls, session, test_id: int, length: int):
+        test = session.query(cls).get(test_id)
+        if not test:
+            raise ValueError("Test not found")
+
+        if length > len(test.questions):
+            raise ValueError("Requested test length exceeds the number of available questions")
+
+        return random.sample(test.questions, length)
+
+
+
+
+
+
+
+
 class Question(Base):
     __tablename__ = "questions"
 
     id = Column(Integer, primary_key=True)
     question = Column(String, nullable=False)
-    explanation = Column(Text)
+    explanation = Column(String)
 
     answers = relationship("Answer", back_populates="question", cascade="all, delete")
+    tests = relationship("Test", secondary=TestQuestions, back_populates="questions")
 
     def __repr__(self):
         return f"<Question(id={self.id}, question='{self.question}', explanation='{self.explanation}')>"
@@ -214,6 +318,7 @@ class Question(Base):
             questions = (
                 session.query(Question).options(joinedload(Question.answers)).all()
             )
+            print(len(questions))
             return questions
         except Exception as e:
             session.rollback()
@@ -242,6 +347,14 @@ class Question(Base):
         """
         question = session.query(Question).get(question_id)
         if question:
+            #  Delete associated notes if there are any
+            notes = (
+                session.query(QuestionNotes).filter_by(question_id=question_id).all()
+            )
+            for note in notes:
+                session.delete(note)
+                # session.commit()
+
             session.delete(question)
             session.commit()
             return True
@@ -259,6 +372,9 @@ class Answer(Base):
     is_right_answer = Column(Boolean, default=False)
 
     question = relationship("Question", back_populates="answers")
+
+    def __repr__(self):
+        return f"<Answer(id={self.id}, answer='{self.answer}', question_id={self.question_id}, is_right_answer={self.is_right_answer})>"
 
     @classmethod
     def set_correct_answers(cls, question_id: int, answers: list):

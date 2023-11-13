@@ -90,6 +90,9 @@ color: rgb(255, 255, 255);
             <property name="wordWrap">
              <bool>true</bool>
             </property>
+            <property name="textInteractionFlags">
+             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+            </property>
            </widget>
           </item>
          </layout>
@@ -295,7 +298,23 @@ color: rgb(255, 255, 255);</string>
            </widget>
           </item>
           <item>
-           <widget class="QTextEdit" name="explanation_edit"/>
+           <widget class="QTextEdit" name="explanation_edit">
+            <property name="mouseTracking">
+             <bool>false</bool>
+            </property>
+            <property name="acceptDrops">
+             <bool>false</bool>
+            </property>
+            <property name="tabChangesFocus">
+             <bool>false</bool>
+            </property>
+            <property name="undoRedoEnabled">
+             <bool>false</bool>
+            </property>
+            <property name="textInteractionFlags">
+             <set>Qt::TextSelectableByMouse</set>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QFrame" name="show_answers_frame">
@@ -332,7 +351,17 @@ color: rgb(255, 255, 255);</string>
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="show_answers_le"/>
+           <widget class="QLabel" name="show_answers_le">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -400,6 +429,7 @@ color: rgb(255, 255, 255);</string>
     </property>
     <addaction name="separator"/>
     <addaction name="actionUser_Login"/>
+    <addaction name="actionSearch_for_question"/>
     <addaction name="actionStart_Quiz"/>
     <addaction name="separator"/>
     <addaction name="actionSet_Item_Correct"/>
@@ -459,7 +489,7 @@ color: rgb(255, 255, 255);</string>
     <string>Delete Current Question</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+D</string>
+    <string>Ctrl+D, Ctrl+D</string>
    </property>
   </action>
   <action name="actionLoad_csv">
@@ -478,6 +508,14 @@ color: rgb(255, 255, 255);</string>
   <action name="actionOpenai_opt">
    <property name="text">
     <string>Openai Options</string>
+   </property>
+  </action>
+  <action name="actionSearch_for_question">
+   <property name="text">
+    <string>Search for question</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
    </property>
   </action>
  </widget>

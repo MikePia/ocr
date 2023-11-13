@@ -190,13 +190,21 @@ class Test(Base):
         "Question", secondary=TestQuestions, back_populates="tests"
     )
 
+    # Get the number of questions in the test
+    def get_number_of_questions(self):
+        return len(self.questions)
+
     def __repr__(self):
         return f"<Test(id={self.id}, name='{self.name}', subject='{self.subject}', level='{self.level}')>"
 
+    @classmethod
+    def getTests(cls, session):
+        return session.query(cls).all()
 
-
-  @classmethod
-    def create_test(cls, session, name: str, subject: str, level: str, question_ids=None):
+    @classmethod
+    def create_test(
+        cls, session, name: str, subject: str, level: str, question_ids=None
+    ):
         test = cls(name=name, subject=subject, level=level)
         session.add(test)
         session.commit()
@@ -204,6 +212,16 @@ class Test(Base):
         if question_ids:
             cls.add_to_test(session, test.id, question_ids)
 
+        return test
+
+    @classmethod
+    def delete_test(cls, session, test_id: int):
+        test = session.query(cls).get(test_id)
+        if not test:
+            logger.warning("Test not found")
+            return None
+        session.delete(test)
+        session.commit()
         return test
 
     @classmethod
@@ -245,15 +263,11 @@ class Test(Base):
             raise ValueError("Test not found")
 
         if length > len(test.questions):
-            raise ValueError("Requested test length exceeds the number of available questions")
+            raise ValueError(
+                "Requested test length exceeds the number of available questions"
+            )
 
         return random.sample(test.questions, length)
-
-
-
-
-
-
 
 
 class Question(Base):
@@ -268,6 +282,21 @@ class Question(Base):
 
     def __repr__(self):
         return f"<Question(id={self.id}, question='{self.question}', explanation='{self.explanation}')>"
+
+    @classmethod
+    def get_all_other_questions(cls, session, question_ids: list):
+        """
+        Get all the questions except those in question_ids.
+
+        Args:
+            session: The session object to access the database.
+            question_ids (list): A list of question ids to exclude.
+
+        Returns:
+            list: A list of Question objects.
+        """
+        # Get all the questions excpet those in question_ids
+        return session.query(Question).filter(Question.id.notin_(question_ids)).all()
 
     @classmethod
     def store_question(

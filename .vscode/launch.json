@@ -5,6 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: Create Test",
+            "type": "python",
+            "request": "launch",
+            "module": "quiz.view.create_test",
+            "justMyCode": true
+        },
+        {
             "name": "Python: Openai options",
             "type": "python",
             "request": "launch",

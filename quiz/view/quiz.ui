@@ -85,7 +85,7 @@ color: rgb(255, 255, 255);
              </sizepolicy>
             </property>
             <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:22pt; font-weight:700; color:#deddda;&quot;&gt;Question:&lt;/span&gt;&lt;/p&gt;&lt;p class=&quot;question&quot;&gt;&lt;span style=&quot; color:#ffffff;&quot;&gt;This is a question about python and you should anser it.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:22pt; font-weight:700; color:#deddda;&quot;&gt;Question:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; color:#ffffff;&quot;&gt;This is not a question?&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -431,11 +431,14 @@ color: rgb(255, 255, 255);</string>
     <addaction name="actionUser_Login"/>
     <addaction name="actionSearch_for_question"/>
     <addaction name="actionStart_Quiz"/>
+    <addaction name="actionTake_Test"/>
+    <addaction name="actionTest_Manager"/>
     <addaction name="separator"/>
     <addaction name="actionSet_Item_Correct"/>
     <addaction name="actionRegenerate"/>
     <addaction name="actionFind_Duplicates"/>
     <addaction name="actionCreate_Q"/>
+    <addaction name="actionEdit_this_question"/>
     <addaction name="actionDelete_Question"/>
     <addaction name="actionLoad_csv"/>
     <addaction name="separator"/>
@@ -516,6 +519,21 @@ color: rgb(255, 255, 255);</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="actionTest_Manager">
+   <property name="text">
+    <string>Test Manager</string>
+   </property>
+  </action>
+  <action name="actionEdit_this_question">
+   <property name="text">
+    <string>Edit this question</string>
+   </property>
+  </action>
+  <action name="actionTake_Test">
+   <property name="text">
+    <string>Take Test</string>
    </property>
   </action>
  </widget>

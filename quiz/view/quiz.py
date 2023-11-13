@@ -22,12 +22,12 @@ from PySide6.QtWidgets import (
 )
 
 # include <QString>
-from quiz.view.create_question import QuizProcessingDialog
+from quiz.view.create_question import EditQuestionDialog, QuizProcessingDialog
 from quiz.view.loadcsv_yesno import LoadCsvYesNo
 from quiz.view.login_dlg import UserLoginDialog
 from quiz.view.question_compare_dlg import QuestionComparisonDialog
 from quiz.view.openai_options import Openai
-
+from quiz.view.create_test import TestDialog
 
 from .quiz_ui import Ui_MainWindow
 from quiz.prepstuff.processquestions import get_gpt_response
@@ -77,6 +77,8 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
         self.actionQuit.triggered.connect(self.quit)
         self.actionOpenai_opt.triggered.connect(self.openai_opt)
         self.actionSearch_for_question.triggered.connect(self.search_for_question)
+        self.actionTest_Manager.triggered.connect(self.test_manager)
+        self.actionTake_Test.triggered.connect(self.take_test)
 
         # Admin actions
         self.actionStart_Quiz.triggered.connect(self.menu_start)
@@ -86,10 +88,10 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
         self.actionCreate_Q.triggered.connect(self.create_question)
         self.actionDelete_Question.triggered.connect(self.delete_question)
         self.actionLoad_csv.triggered.connect(self.load_csv)
+        self.actionEdit_this_question.triggered.connect(self.edit_question)
 
         recreate_tables()
         self.get_quiz_questions()
-        print("Num questions:", len(self.questions))
 
         self.login(email)
 
@@ -186,8 +188,7 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
 
     def create_question(self):
         dialog = QuizProcessingDialog(self.user)
-        x = dialog.exec()
-        print(x)
+        dialog.exec()
 
     def delete_question(self):
         if not self.user or self.user.role != "admin":
@@ -220,6 +221,23 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
                 self.process_csv()
         else:
             self.process_csv()
+
+    def edit_question(self):
+        if self.current_question >= 0 and self.current_question < len(self.questions):
+            if not self.user or self.user.role != "admin":
+                QMessageBox.warning(self, "Error", "You must be an admin to do this")
+                return
+            # Get the current question
+            question = self.questions[self.current_question]
+            dialog = EditQuestionDialog(self.user, question, self)
+            dialog.exec()
+
+            session = get_session()
+            self.questions = Question.get_all_questions(session)
+            session.close()
+
+            self.current_question -= 1
+            self.next()
 
     def process_csv(self):
         csv_file, _ = QFileDialog.getOpenFileName(
@@ -291,8 +309,6 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
         text = dialog.textValue()
 
         if ok:
-            # Process the input string
-            print("You entered:", text)
             # Search questions for matches
             self.get_quiz_questions()
             qs = [
@@ -308,6 +324,21 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
             self.selected_questions = qs
             self.next()
 
+    def test_manager(self):
+        dialog = TestDialog()
+        dialog.exec()
+
+    def take_test(self):
+        html = (
+            "<html><head/><body>"
+            '<p><span style=" font-size:22pt; font-weight:700; color:#deddda;">Test Unimplemented</span></p>'
+            '<p><span style=" color:#cccccc;">I created this tool to pass a few Freelancer quizes and to try out PySide6. If '
+            "there is any interest in developing features on this app, improving it, or getting an easy PyPi release, "
+            "please contact me by opening an issue in github <hr><br>"
+            "https://github.com/MikePia/quizzer/issues</span></p></body></html>"
+        )
+        QMessageBox.information(self, "Test is Unimplemented", html)
+
     def login(self, email):
         """This is the automatic login only. Only used by __init__"""
         if self.settings.value("save_choice", False):
@@ -317,7 +348,6 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
 
     def get_quiz_questions(self):
         session = get_session()  # Get the SQLAlchemy session
-        print(session.is_active)
         self.questions = Question.get_all_questions(session)
 
         session.close()  # Close the session

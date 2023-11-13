@@ -186,6 +186,52 @@ class QuizProcessingDialog(QDialog, Ui_Dialog):
             self.answer_layout.addStretch(1)
 
 
+class EditQuestionDialog(QuizProcessingDialog):
+    def __init__(self, user, question, parent=None):
+        super().__init__(user, parent)
+        # Disable processing buttons
+        self.process_directory_pb.setEnabled(False)
+        self.process_image_pb.setEnabled(False)
+        self.next_btn.setEnabled(False)
+
+        self.question_edit.setText(question.question)
+        self.answer_edits = []
+        for answer in question.answers:
+            self.add_answer_widget(answer.answer)
+        self.answer_layout.addStretch(1)
+        self.question = question
+
+    def save_question(self):
+        question = Question(
+            question=self.question_edit.text(),
+            answers=[Answer(answer=edit.text()) for edit in self.answer_edits],
+        )
+
+        dup = find_duplicates(self, self.user, question)
+        if dup and dup.id != self.question.id:
+            formatquestion = (
+                '<html><head/><body><p><span style="font-size:22pt; font-weight:700; color:#deddda;">'
+                'Near Duplicates found </span></p><span style="color:#ffffff;"><p><b>Do you still want '
+                f'to save this question? </b></p><hr><p class="question"> {dup.question}</p>'
+            )
+            for answer in dup.answers:
+                formatquestion += f"<p>{answer.answer}</p>"
+            formatquestion += "</span></body></html>"
+            result = QMessageBox.question(
+                self,
+                "Near Duplicate found",
+                formatquestion,
+                QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel,
+            )
+            if result == QMessageBox.Cancel or result == QMessageBox.No:
+                self.close()
+                return
+        Question.update_question(question, self.question.id)
+        self.close()
+
+        return
+
+
 if __name__ == "__main__":
 
     class user:

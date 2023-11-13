@@ -235,7 +235,8 @@ class Test(Base):
 
         for qid in question_ids:
             question = session.query(Question).get(qid)
-            if question:
+            # Add the question if it is not already in the test
+            if question and question not in test.questions:
                 test.questions.append(question)
 
         session.commit()
@@ -317,6 +318,24 @@ class Question(Base):
             session.add(new_question)
             session.commit()
         except Exception as e:
+            session.rollback()
+            raise e
+        finally:
+            session.close()
+
+    @classmethod
+    def update_question(cls, updated_q, question_id):
+        session = get_session()
+        try:
+            q = session.query(cls).filter_by(id=question_id).one()
+            assert len(q.answers) == len(updated_q.answers)
+            for answer, updated_answer in zip(q.answers, updated_q.answers):
+                answer.answer = updated_answer.answer
+            q.question = updated_q.question
+            session.commit()
+        except Exception as e:
+            logger.exception(str(e))
+
             session.rollback()
             raise e
         finally:
@@ -420,6 +439,21 @@ class Answer(Base):
         except Exception as e:
             session.rollback()
             logger.exception(str(e))
+            raise e
+        finally:
+            session.close()
+
+    @classmethod
+    def update_answer(cls, updated_answer, answer_id):
+        session = get_session()
+        try:
+            answer = session.query(Answer).filter_by(id=answer_id).one()
+            answer.answer = updated_answer.answer
+            answer.id = answer_id
+            session.commit()
+        except Exception as e:
+            logger.exception(str(e))
+            session.rollback()
             raise e
         finally:
             session.close()

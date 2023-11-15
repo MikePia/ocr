@@ -10,11 +10,11 @@ from quiz.view.openai_options_ui import Ui_Openai_dlg
 load_dotenv(os.environ["HOME"] + "/.chatgpt")
 
 BASIC_URI = "https://api.openai.com/v1"
-HEADERS = {"Authorization": "Bearer " + os.environ.get("OPEN_API_KEY")}
+HEADERS = {"Authorization": "Bearer " + os.environ.get("OPENAI_API_KEY")}
 COMPANY = "ZeroSubstance"
 APPNAME = "FreeQuizApp"
 # load_dotenv(os.environ["HOME"] + "/.chatgpt")
-# openai.api_key = os.environ["OPEN_API_KEY"]
+# openai.api_key = os.environ["OPENAI_API_KEY"]
 
 
 def list_models(p=True):

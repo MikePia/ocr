@@ -1,9 +1,10 @@
 # pyside6-rcc resources.qrc -o resources_rc.py
+import html
 import logging
 import sys
 
-from PySide6.QtCore import Qt, QSettings, QByteArray, QSize
-from PySide6.QtGui import QIcon, QPixmap
+from PySide6.QtCore import Qt, QSettings, QByteArray
+from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (
     QApplication,
     QButtonGroup,
@@ -329,15 +330,16 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
         dialog.exec()
 
     def take_test(self):
-        html = (
+        html_text = (
             "<html><head/><body>"
             '<p><span style=" font-size:22pt; font-weight:700; color:#deddda;">Test Unimplemented</span></p>'
             '<p><span style=" color:#cccccc;">I created this tool to pass a few Freelancer quizes and to try out PySide6. If '
             "there is any interest in developing features on this app, improving it, or getting an easy PyPi release, "
             "please contact me by opening an issue in github <hr><br>"
-            "https://github.com/MikePia/quizzer/issues</span></p></body></html>"
+            '<a href="https://github.com/MikePia/quizzer" style="color: white; text-decoration: none;">https://github.com/MikePia/quizzer</a>'
+            "</span></p></body></html>"
         )
-        QMessageBox.information(self, "Test is Unimplemented", html)
+        QMessageBox.information(self, "Test is Unimplemented", html_text)
 
     def login(self, email):
         """This is the automatic login only. Only used by __init__"""
@@ -351,6 +353,18 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
         self.questions = Question.get_all_questions(session)
 
         session.close()  # Close the session
+
+    def parse_correct_answer(self, explanation):
+        ans_text = explanation.split(".")[0]
+        if ans_text.lower().startswith("the correct answer is "):
+            ans_text = ans_text[22:]
+        for ans in [x[1] for x in self.answer_items]:
+            if ans[2:].strip().lower() in ans_text.lower():
+                q = self.questions[self.current_question]
+                Answer.set_correct_answers(q.id, [ans[2:].strip()])
+
+                self.show_answers_le.setText(ans)
+                break
 
     def get_explanation(self, force=False):
         QApplication.setOverrideCursor(Qt.WaitCursor)
@@ -369,9 +383,12 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
                     session = get_session()
                     Question.update_explanation(session, q.explanation, q.id)
                     session.close()
-
-                html = f'<html><head/><body><p><span style=" font-size:22pt; font-weight:700; color:#deddda;">GPT Explanation:</span></p><p class="question"><span style=" color:#ffffff;">{q.explanation}</span></p></body></html>'
-                self.explanation_edit.setText(html)
+                encoded_explanation = html.escape(q.explanation)
+                test_encode = q.explanation.encode("utf-8")
+                html_text = f'<html><head/><body><p><span style=" font-size:22pt; font-weight:700; color:#deddda;">GPT Explanation:</span></p><p class="question"><span style=" color:#ffffff;">{encoded_explanation}</span></p></body></html>'
+                self.explanation_edit.setText(html_text)
+                if not self.show_answers_le.text():
+                    self.parse_correct_answer(q.explanation)
                 self.update()
                 self.explanation_edit.show()
         finally:
@@ -475,17 +492,22 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
         if self.current_question < len(self.questions) - 1:
             self.current_question += 1
             q = self.questions[self.current_question]
-            html = f'<html><head/><body><p><span style=" font-size:22pt; font-weight:700; color:#deddda;">Question:</span></p><p class="question"><span style=" color:#ffffff;">{q.question}</span></p></body></html>'
-            self.question_label.setText(html)
+            html_text = f'<html><head/><body><p><span style=" font-size:22pt; font-weight:700; color:#deddda;">Question:</span></p><p class="question"><span style=" color:#ffffff;">{q.question}</span></p></body></html>'
+            self.question_label.setText(html_text)
 
             self.clearLayout(self.answers_verticalLayout)
             count = 0
-            html = f'<html><head/><body><p><span style=" font-size:22pt; font-weight:700; color:#deddda;">Answers:</span></p><p class="question"><span style=" color:#ffffff;"><hr></span></p></body></html>'
-            new_answers_label = QLabel(html)
-            # self.answers_label.setText(html)
+            html_text = '<html><head/><body><p><span style=" font-size:22pt; font-weight:700; color:#deddda;">Answers:</span></p><p class="question"><span style=" color:#ffffff;"><hr></span></p></body></html>'
+            new_answers_label = QLabel(html_text)
+            # self.answers_label.setText(html_text)
             self.answers_verticalLayout.addWidget(new_answers_label)
             self.answers_verticalLayout.setAlignment(new_answers_label, Qt.AlignTop)
-            self.statusBar().showMessage("Question id: " + str(q.id))
+            self.statusBar().showMessage(
+                "Question # "
+                + str(self.current_question)
+                + " Question id: "
+                + str(q.id)
+            )
             for answer in q.answers:
                 if not answer.answer or not answer.answer.strip():  # Skip empty answers
                     continue  # Skip empty answers
@@ -526,6 +548,10 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
             self.setStyleSheet(self.styleSheet())
             if self.show_answers_bool:
                 self.show_answer()
+
+            # Set the focus on the first answer
+            self.answer_items[0][0].setFocus()
+
             self.show()
             self.update()
         else:
@@ -574,7 +600,8 @@ class EndOfQuizDialog(QDialog):
 
         # Number box
         self.number_box = QSpinBox()
-        self.number_box.setMinimum(1)  # Assuming question numbers start from 1
+        self.number_box.setMinimum(1)
+        self.number_box.setMaximum(99999)
 
         # Button group
         self.button_group = QButtonGroup(self)

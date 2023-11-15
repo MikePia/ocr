@@ -6,3 +6,5 @@ quiz/prepstuff/.~lock*
 quiz/prepstuff/results2.csv
 data/fl*
 data/python2*
+bytecodes.md
+data/wait.py

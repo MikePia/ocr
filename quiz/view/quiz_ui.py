@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'quiz.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.5.2
+## Created by: Qt User Interface Compiler version 6.6.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -337,9 +337,12 @@ class Ui_MainWindow(object):
         self.actionFind_Duplicates.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+D", None))
 #endif // QT_CONFIG(shortcut)
         self.actionCreate_Q.setText(QCoreApplication.translate("MainWindow", u"Create New Question", None))
+#if QT_CONFIG(shortcut)
+        self.actionCreate_Q.setShortcut(QCoreApplication.translate("MainWindow", u"C", None))
+#endif // QT_CONFIG(shortcut)
         self.actionDelete_Question.setText(QCoreApplication.translate("MainWindow", u"Delete Current Question", None))
 #if QT_CONFIG(shortcut)
-        self.actionDelete_Question.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+D, Ctrl+D", None))
+        self.actionDelete_Question.setShortcut(QCoreApplication.translate("MainWindow", u"D, D", None))
 #endif // QT_CONFIG(shortcut)
         self.actionLoad_csv.setText(QCoreApplication.translate("MainWindow", u"Load Questions From csv", None))
         self.actionQuit.setText(QCoreApplication.translate("MainWindow", u"Quit", None))
@@ -353,9 +356,18 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(shortcut)
         self.actionTest_Manager.setText(QCoreApplication.translate("MainWindow", u"Test Manager", None))
         self.actionEdit_this_question.setText(QCoreApplication.translate("MainWindow", u"Edit this question", None))
+#if QT_CONFIG(shortcut)
+        self.actionEdit_this_question.setShortcut(QCoreApplication.translate("MainWindow", u"E", None))
+#endif // QT_CONFIG(shortcut)
         self.actionTake_Test.setText(QCoreApplication.translate("MainWindow", u"Take Test", None))
+#if QT_CONFIG(shortcut)
+        self.actionTake_Test.setShortcut(QCoreApplication.translate("MainWindow", u"T, T", None))
+#endif // QT_CONFIG(shortcut)
         self.question_label.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:22pt; font-weight:700; color:#deddda;\">Question:</span></p><p><span style=\" color:#ffffff;\">This is not a question?</span></p></body></html>", None))
         self.answers_label.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:22pt; color:#deddda;\">Answers:</span></p></body></html>", None))
+#if QT_CONFIG(tooltip)
+        self.submit_btn.setToolTip(QCoreApplication.translate("MainWindow", u"Press RETURN", None))
+#endif // QT_CONFIG(tooltip)
         self.submit_btn.setText(QCoreApplication.translate("MainWindow", u"Submit", None))
 #if QT_CONFIG(shortcut)
         self.submit_btn.setShortcut(QCoreApplication.translate("MainWindow", u"Return", None))
@@ -374,6 +386,9 @@ class Ui_MainWindow(object):
 #if QT_CONFIG(shortcut)
         self.next_btn.setShortcut(QCoreApplication.translate("MainWindow", u"Right", None))
 #endif // QT_CONFIG(shortcut)
+#if QT_CONFIG(tooltip)
+        self.explanation_btn.setToolTip(QCoreApplication.translate("MainWindow", u"CTRL E", None))
+#endif // QT_CONFIG(tooltip)
         self.explanation_btn.setText(QCoreApplication.translate("MainWindow", u"Show Explanation", None))
 #if QT_CONFIG(shortcut)
         self.explanation_btn.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+E", None))

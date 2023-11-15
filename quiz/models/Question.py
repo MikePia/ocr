@@ -29,7 +29,7 @@ Base = declarative_base()
 logger = logging.getLogger(__name__)
 
 load_dotenv(os.environ["HOME"] + "/.quizzer_rc")
-openai.api_key = os.environ["OPEN_API_KEY"]
+openai.api_key = os.environ["OPENAI_API_KEY"]
 
 
 Base = declarative_base()
@@ -366,7 +366,6 @@ class Question(Base):
             questions = (
                 session.query(Question).options(joinedload(Question.answers)).all()
             )
-            print(len(questions))
             return questions
         except Exception as e:
             session.rollback()

@@ -15,7 +15,7 @@ from quiz.models.Question import (
 logger = logging.getLogger(__name__)
 
 load_dotenv(os.environ["HOME"] + "/.chatgpt")
-openai.api_key = os.environ["OPEN_API_KEY"]
+openai.api_key = os.environ["OPENAI_API_KEY"]
 
 
 def process_csv(file_name):
@@ -95,8 +95,8 @@ def get_prompt(question, subject):
 Below I will paste a multiple choice {subject} quiz question followed by the possible answers.
  The question may be a fill in the blank type question where the blank is represented by at
  least 3 underscores ('___'). The answers are enumerated with letters. After the list of answers,
- I will write 'End of answers.' You should then answer the question by giving the correct response
-  without the corresponding letter associated with the correct answer(s).
+ I will write 'End of answers.' You should then answer the question by giving the correct response 
+ like this: "The answer is ____". Do not include the enumerated letter to refer to any of the answers.
  Then I would like you to explain why the answer(s) is
  correct. Do not list any additional answer options or repeat the prompt as part of your response.
 
@@ -128,18 +128,19 @@ def get_gpt_response(question, subject="python"):
 
     # Extract the response
     api_response = response.choices[0]["message"]["content"]
+    return api_response
 
-    # Here we assume the correct answer(s) and explanation are separated by a space and start after 'The correct answer(s) is/are'
-    answer_explanation_split = api_response.split("\n", 1)
-    if len(answer_explanation_split) == 2:
-        # Parse out the correct answers
-        _, explanation = answer_explanation_split
-        return explanation
-    else:
-        print(
-            "Could not parse the correct answer(s) and explanation properly from the API response."
-        )
-    return None
+    # # Here we assume the correct answer(s) and explanation are separated by a space and start after 'The correct answer(s) is/are'
+    # answer_explanation_split = api_response.split("\n", 1)
+    # if len(answer_explanation_split) == 2:
+    #     # Parse out the correct answers
+    #     _, explanation = answer_explanation_split
+    #     return explanation
+    # else:
+    #     print(
+    #         "Could not parse the correct answer(s) and explanation properly from the API response. Press CTRL R to try again."
+    #     )
+    # return "Could not parse the correct answer(s) and explanation properly from the API response. Press CTRL R to try again."
 
 
 # Function to generate explanations for each question and update the database

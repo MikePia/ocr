@@ -54,7 +54,7 @@ pip install -r requirements.txt
 Create a file named ```.env``` in the project directory place the following in it
 
 ```txt
-OPEN_API_KEY=<your-openai-api-key>
+OPENAI_API_KEY=<your-openai-api-key>
 DATABASE_URL="sqlite:///mydatabase.db"
 # or give a full path to where ever you want to place your database like
 DATABASE_URL="sqlite:////user/local/utility/quizzer2/mydatabase.db"

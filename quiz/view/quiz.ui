@@ -162,6 +162,9 @@ color: rgb(255, 255, 255);
           </item>
           <item>
            <widget class="QPushButton" name="submit_btn">
+            <property name="toolTip">
+             <string>Press RETURN</string>
+            </property>
             <property name="styleSheet">
              <string notr="true">
 color: rgb(255, 255, 255);</string>
@@ -281,6 +284,9 @@ color: rgb(255, 255, 255);</string>
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
            <widget class="QPushButton" name="explanation_btn">
+            <property name="toolTip">
+             <string>CTRL E</string>
+            </property>
             <property name="styleSheet">
              <string notr="true">color: rgb(255, 255, 255);</string>
             </property>
@@ -486,13 +492,16 @@ color: rgb(255, 255, 255);</string>
    <property name="text">
     <string>Create New Question</string>
    </property>
+   <property name="shortcut">
+    <string>C</string>
+   </property>
   </action>
   <action name="actionDelete_Question">
    <property name="text">
     <string>Delete Current Question</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+D, Ctrl+D</string>
+    <string>D, D</string>
    </property>
   </action>
   <action name="actionLoad_csv">
@@ -530,10 +539,16 @@ color: rgb(255, 255, 255);</string>
    <property name="text">
     <string>Edit this question</string>
    </property>
+   <property name="shortcut">
+    <string>E</string>
+   </property>
   </action>
   <action name="actionTake_Test">
    <property name="text">
     <string>Take Test</string>
+   </property>
+   <property name="shortcut">
+    <string>T, T</string>
    </property>
   </action>
  </widget>

@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'process_image.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.5.2
+## Created by: Qt User Interface Compiler version 6.6.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -24,23 +24,25 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         if not Dialog.objectName():
             Dialog.setObjectName(u"Dialog")
-        Dialog.resize(1294, 1009)
+        Dialog.resize(1294, 1060)
         sizePolicy = QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(Dialog.sizePolicy().hasHeightForWidth())
         Dialog.setSizePolicy(sizePolicy)
-        Dialog.setStyleSheet(u"\n"
-"background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(8, 24, 62, 255), stop:1 rgba(21, 57, 96, 255));\n"
-"color: rgb(246, 245, 244);")
+        Dialog.setStyleSheet(u"background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0.987, y2:0.579545, stop:0.028065 rgba(30, 82, 139, 255), stop:0.731343 rgba(12, 34, 89, 255));\n"
+"color: rgb(255, 255, 255);\n"
+"\n"
+"")
         self.verticalLayout = QVBoxLayout(Dialog)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.frame = QFrame(Dialog)
         self.frame.setObjectName(u"frame")
         self.frame.setMaximumSize(QSize(16777215, 50))
-        self.frame.setStyleSheet(u"\n"
-"background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(8, 24, 62, 255), stop:1 rgba(21, 57, 96, 255));\n"
-"color: rgb(246, 245, 244);")
+        self.frame.setStyleSheet(u"background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0.987, y2:0.579545, stop:0.028065 rgba(30, 82, 139, 255), stop:0.731343 rgba(12, 34, 89, 255));\n"
+"color: rgb(255, 255, 255);\n"
+"\n"
+"")
         self.frame.setFrameShape(QFrame.StyledPanel)
         self.frame.setFrameShadow(QFrame.Raised)
         self.horizontalLayout = QHBoxLayout(self.frame)
@@ -124,9 +126,7 @@ class Ui_Dialog(object):
         sizePolicy1.setVerticalStretch(1)
         sizePolicy1.setHeightForWidth(self.image_widget.sizePolicy().hasHeightForWidth())
         self.image_widget.setSizePolicy(sizePolicy1)
-        self.image_widget.setStyleSheet(u"\n"
-"background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(8, 24, 62, 255), stop:1 rgba(21, 57, 96, 255));\n"
-"color: rgb(246, 245, 244);")
+        self.image_widget.setStyleSheet(u"")
         self.horizontalLayout_5 = QHBoxLayout(self.image_widget)
         self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
         self.image_label = QLabel(self.image_widget)
@@ -141,9 +141,7 @@ class Ui_Dialog(object):
         self.form_edit_widget.setObjectName(u"form_edit_widget")
         sizePolicy1.setHeightForWidth(self.form_edit_widget.sizePolicy().hasHeightForWidth())
         self.form_edit_widget.setSizePolicy(sizePolicy1)
-        self.form_edit_widget.setStyleSheet(u"\n"
-"background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(8, 24, 62, 255), stop:1 rgba(21, 57, 96, 255));\n"
-"color: rgb(246, 245, 244);")
+        self.form_edit_widget.setStyleSheet(u"")
         self.horizontalLayout_4 = QHBoxLayout(self.form_edit_widget)
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
         self.widget_2 = QWidget(self.form_edit_widget)
@@ -205,7 +203,7 @@ class Ui_Dialog(object):
         self.close_btn.setMaximumSize(QSize(75, 16777215))
         self.close_btn.setLayoutDirection(Qt.LeftToRight)
         icon2 = QIcon()
-        icon2.addFile(u":/icons/images/done.gif", QSize(), QIcon.Normal, QIcon.On)
+        icon2.addFile(u":/icons/images/close.png", QSize(), QIcon.Normal, QIcon.On)
         self.close_btn.setIcon(icon2)
 
         self.horizontalLayout_6.addWidget(self.close_btn)
@@ -280,7 +278,7 @@ class Ui_Dialog(object):
     def retranslateUi(self, Dialog):
         Dialog.setWindowTitle(QCoreApplication.translate("Dialog", u"Dialog", None))
         self.process_directory_pb.setText(QCoreApplication.translate("Dialog", u"Process Directory", None))
-        self.process_image_pb.setText(QCoreApplication.translate("Dialog", u"Process Image", None))
+        self.process_image_pb.setText(QCoreApplication.translate("Dialog", u"Open File", None))
         self.image_label.setText("")
         self.label.setText(QCoreApplication.translate("Dialog", u"Question", None))
         self.close_btn.setText(QCoreApplication.translate("Dialog", u"Close", None))
@@ -289,7 +287,7 @@ class Ui_Dialog(object):
 #endif // QT_CONFIG(tooltip)
         self.add_answer_pb.setText(QCoreApplication.translate("Dialog", u"Add Answer", None))
 #if QT_CONFIG(tooltip)
-        self.delete_answer_pb.setToolTip(QCoreApplication.translate("Dialog", u"<html><head/><body><p><span style=\" color:#f6f5f4;\">Will delete the last answer edit in the list</span></p></body></html>", None))
+        self.delete_answer_pb.setToolTip(QCoreApplication.translate("Dialog", u"<html><head/><body><p><span style=\" color:#f6f5f4;\">Will delete the last answer widget in the list</span></p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.delete_answer_pb.setText(QCoreApplication.translate("Dialog", u"Delete Answer", None))
 #if QT_CONFIG(tooltip)
@@ -300,5 +298,8 @@ class Ui_Dialog(object):
         self.save_btn.setToolTip(QCoreApplication.translate("Dialog", u"<html><head/><body><p><span style=\" font-size:12pt;\">Save as a new question in the database and proceed to the next question if there is one</span></p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.save_btn.setText(QCoreApplication.translate("Dialog", u"Save Question", None))
+#if QT_CONFIG(shortcut)
+        self.save_btn.setShortcut(QCoreApplication.translate("Dialog", u"Ctrl+S", None))
+#endif // QT_CONFIG(shortcut)
     # retranslateUi
 

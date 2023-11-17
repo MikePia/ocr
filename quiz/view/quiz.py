@@ -1,6 +1,7 @@
 # pyside6-rcc resources.qrc -o resources_rc.py
 import html
 import logging
+import random
 import sys
 
 from PySide6.QtCore import Qt, QSettings, QByteArray
@@ -508,7 +509,9 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
                 + " Question id: "
                 + str(q.id)
             )
-            for answer in q.answers:
+            answers = q.answers.copy()
+            random.shuffle(answers)
+            for answer in answers:
                 if not answer.answer or not answer.answer.strip():  # Skip empty answers
                     continue  # Skip empty answers
                 ans = chr(count + ord("A")) + ". " + answer.answer
@@ -620,11 +623,16 @@ class EndOfQuizDialog(QDialog):
         btn_cancel = QPushButton("Cancel")
         btn_accept.clicked.connect(self.accept)
         btn_cancel.clicked.connect(self.reject)
+        # get notification when number_box changes
+        self.number_box.valueChanged.connect(self.number_changed)
 
         layout.addWidget(btn_accept)
         layout.addWidget(btn_cancel)
 
         self.setLayout(layout)
+
+    def number_changed(self):
+        self.radio_specific_question.setChecked(True)
 
     def get_choice(self):
         if self.radio_start_over.isChecked():

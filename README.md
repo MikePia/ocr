@@ -80,3 +80,4 @@ I created this tool to sudy and pass a few Freelancer Skill Tests. Currently the
 * Re-run the questions till I can complete them without a mistake
 * Re take the Freelancer exam, doing screenshots only of questions I haven't seen
 * Ace the Freelancer exam :smile:
+

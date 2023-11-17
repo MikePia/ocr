@@ -402,7 +402,7 @@ color: rgb(36, 31, 49);</string>
                <item>
                 <widget class="QPushButton" name="delete_answer_pb">
                  <property name="toolTip">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#f6f5f4;&quot;&gt;Will delete the last answer edit in the list&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#f6f5f4;&quot;&gt;Will delete the last answer widget in the list&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                  <property name="styleSheet">
                   <string notr="true"/>
@@ -457,6 +457,9 @@ color: rgb(36, 31, 49);</string>
                   <iconset>
                    <normalon>:/icons/images/save.png</normalon>
                   </iconset>
+                 </property>
+                 <property name="shortcut">
+                  <string>Ctrl+S</string>
                  </property>
                 </widget>
                </item>

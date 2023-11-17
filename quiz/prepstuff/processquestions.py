@@ -97,6 +97,7 @@ Below I will paste a multiple choice {subject} quiz question followed by the pos
  least 3 underscores ('___'). The answers are enumerated with letters. After the list of answers,
  I will write 'End of answers.' You should then answer the question by giving the correct response 
  like this: "The answer is ____". Do not include the enumerated letter to refer to any of the answers.
+ For example, say "The correct answer is all of these", instead of "The correct answer is A) all of these."
  Then I would like you to explain why the answer(s) is
  correct. Do not list any additional answer options or repeat the prompt as part of your response.
 

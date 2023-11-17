@@ -26,7 +26,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1188, 644)
+        MainWindow.resize(1188, 643)
         icon = QIcon()
         icon.addFile(u"../../../../../../home/mike/images/ZSLogo1.png", QSize(), QIcon.Normal, QIcon.Off)
         MainWindow.setWindowIcon(icon)
@@ -401,7 +401,7 @@ class Ui_MainWindow(object):
         self.show_answers_le.setText(QCoreApplication.translate("MainWindow", u"TextLabel", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Take notes", None))
 #if QT_CONFIG(tooltip)
-        self.save_notes_btn.setToolTip(QCoreApplication.translate("MainWindow", u"Save current note to the database", None))
+        self.save_notes_btn.setToolTip(QCoreApplication.translate("MainWindow", u"CTRL S, Save not to database for this user", None))
 #endif // QT_CONFIG(tooltip)
         self.save_notes_btn.setText(QCoreApplication.translate("MainWindow", u"Save Notes", None))
 #if QT_CONFIG(shortcut)

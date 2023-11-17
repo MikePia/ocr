@@ -81,6 +81,7 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
         self.actionSearch_for_question.triggered.connect(self.search_for_question)
         self.actionTest_Manager.triggered.connect(self.test_manager)
         self.actionTake_Test.triggered.connect(self.take_test)
+        self.actionGoto.triggered.connect(self.goto)
 
         # Admin actions
         self.actionStart_Quiz.triggered.connect(self.menu_start)
@@ -320,9 +321,15 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
             ]
             ids = [x.id for x in self.questions if text.lower() in x.question.lower()]
 
-            QMessageBox.information(
-                self, "Search Results", f"Found {len(qs)} questions. Ids: {ids}"
+            result = QMessageBox.question(
+                self,
+                "Search Results",
+                f"Found {len(qs)} questions. Ids: {ids}.\nDo you want to view them?",
+                QMessageBox.Yes | QMessageBox.No,
             )
+            if result == QMessageBox.No:
+                return
+
             self.selected_questions = qs
             self.next()
 
@@ -341,6 +348,30 @@ class FreeQuiz(QMainWindow, Ui_MainWindow):
             "</span></p></body></html>"
         )
         QMessageBox.information(self, "Test is Unimplemented", html_text)
+
+    def goto(self):
+        dialog = GoToDialog()
+        dialog.exec()
+        result = dialog.get_choice()
+        if result["type"] == "question_number":
+            if result["value"] > len(self.questions):
+                QMessageBox.warning(self, "Error", "No question found with that number")
+                return
+            self.current_question = result["value"] - 1
+
+            self.next()
+        elif result["type"] == "question_id":
+            if not self.questions:
+                self.get_quiz_questions()
+            selected_question = [
+                i for i, x in enumerate(self.questions) if x.id == result["value"]
+            ]
+            if not selected_question:
+                QMessageBox.warning(self, "Error", "No question found with that ID")
+                return
+
+            self.current_question = selected_question[0] - 1
+            self.next()
 
     def login(self, email):
         """This is the automatic login only. Only used by __init__"""
@@ -641,6 +672,51 @@ class EndOfQuizDialog(QDialog):
             return "specific_question", self.number_box.value()
         else:
             return "quit", 0
+
+
+# Create dialog with choice between selectin quetion number or question id and a number entry box
+# from PyQt5.QtWidgets import QDialog, QVBoxLayout, QRadioButton, QSpinBox, QPushButton
+
+
+class GoToDialog(QDialog):
+    def __init__(self):
+        super().__init__()
+
+        layout = QVBoxLayout()
+
+        self.radio_question_number = QRadioButton("Select by question number")
+        self.radio_question_id = QRadioButton("Select by question ID")
+        self.number_box = QSpinBox()
+        self.number_box.setMinimum(1)
+        self.number_box.setMaximum(99999)
+
+        self.radio_question_number.toggled.connect(self.number_box.setEnabled)
+
+        layout.addWidget(self.radio_question_number)
+        layout.addWidget(self.radio_question_id)
+        layout.addWidget(self.number_box)
+
+        btn_accept = QPushButton("OK")
+        btn_cancel = QPushButton("Cancel")
+        btn_accept.clicked.connect(self.accept)
+        btn_cancel.clicked.connect(self.reject)
+
+        layout.addWidget(btn_accept)
+        layout.addWidget(btn_cancel)
+
+        self.setLayout(layout)
+        self.setStyleSheet(
+            "background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0.987, y2:0.579545, stop:0.028065 rgba(30, 82, 139, 255), stop:0.731343 rgba(12, 34, 89, 255));\n"
+            "color: rgb(255, 255, 255);\n"
+        )
+        self.radio_question_id.setChecked(True)
+        self.number_box.setFocus()
+
+    def get_choice(self):
+        if self.radio_question_number.isChecked():
+            return {"type": "question_number", "value": self.number_box.value()}
+        else:
+            return {"type": "question_id", "value": self.number_box.value()}
 
 
 def main(email=None):

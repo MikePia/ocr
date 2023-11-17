@@ -436,6 +436,7 @@ color: rgb(255, 255, 255);</string>
     <addaction name="separator"/>
     <addaction name="actionUser_Login"/>
     <addaction name="actionSearch_for_question"/>
+    <addaction name="actionGoto"/>
     <addaction name="actionStart_Quiz"/>
     <addaction name="actionTake_Test"/>
     <addaction name="actionTest_Manager"/>
@@ -549,6 +550,14 @@ color: rgb(255, 255, 255);</string>
    </property>
    <property name="shortcut">
     <string>T, T</string>
+   </property>
+  </action>
+  <action name="actionGoto">
+   <property name="text">
+    <string>Go To Question</string>
+   </property>
+   <property name="shortcut">
+    <string>G</string>
    </property>
   </action>
  </widget>
